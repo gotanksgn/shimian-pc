@@ -1,51 +1,23 @@
 // 导入组件
 import Vue from 'vue';
-import Router from 'vue-router';
+import VueRouter from 'vue-router';
 // 登录
-import login from '@/views/login';
-// 首页
-import index from '@/views/index';
+import Login from '@/views/login.vue';
+import Main from '@/views/main.vue';
 
 // 启用路由
-Vue.use(Router);
+Vue.use(VueRouter);
 
 // 导出路由 
-export default new Router({
+export default new VueRouter({
     routes: [{
         path: '/',
-        name: '',
-        component: login,
-        hidden: true,
-        meta: {
-            requireAuth: false
-        }
+        component: Login
     }, {
         path: '/login',
-        name: '登录',
-        component: login,
-        hidden: true,
-        meta: {
-            requireAuth: false
-        }
+        component: Login
     }, {
-        path: '/index',
-        name: '首页',
-        component: index,
-        iconCls: 'el-icon-tickets',
-        children: [{
-            path: '/druid/login',
-            name: '监控查询',
-            component: druidLogin,
-            meta: {
-                requireAuth: true
-            }
-        }, {
-            path: '/charts/statistics',
-            name: '数据可视化',
-            component: statistics,
-            meta: {
-                requireAuth: true
-            }
-        }]
+        path: '/main',
+        component: Main
     }]
 })
