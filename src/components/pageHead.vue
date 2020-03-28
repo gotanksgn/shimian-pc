@@ -10,7 +10,7 @@
 				</a>
 			</el-col>
 			<el-col :span="12">
-				<el-menu :default-active="'0'"  mode="horizontal" @select="handleSelect" v-if="user.id!=null"
+				<el-menu :default-active="'0'"  mode="horizontal" @select="handleSelect" v-if="loginStatus"
 					background-color="#333" text-color="#fff" active-text-color="#ffd04b"> 
 					<el-menu-item  :index="idx.toString()" v-for="(item, idx) in menuList" :key="idx">
 						<a>	{{item.label}}
@@ -20,41 +20,73 @@
 				</el-menu>
 			</el-col>
 			<el-col :span="6">
-				<div class="header-right" v-if="user.id!=null">        
-					<a class="header-info-text">{{user.fullname}}</a><a class="header-login-status" href="javascript:;">退出</a>
+				<div class="header-right" v-if="loginStatus">        
+					<a class="header-info-text">{{user.fullname}}</a><a class="header-login-status" href="javascript:;" @click="logout()">退出</a>
 				</div>
 			</el-col>
 		</el-row>
 	</div>
 </template>
 <script>
-	import { mapState} from 'vuex'	
+	import {mapState,mapActions} from 'vuex'	
 	export default {
 		name: 'pageHead',
 		data() {
 			return {
-				
+
 			};
 		},
+		props: {
+			loginStatus:{
+				type: Boolean,
+				default: false
+			}
+		},
+		created:function(){
+			if(this.loginStatus){
+				this.getMenuList();
+				this.getLoginUser();
+			}
+		},
+/* 		watch:{
+			loginStatus(oldV,newV){
+				console.log('old='+oldV+',new='+newV);
+			}
+		}, */
 		computed:{
 			...mapState('login', ['user','menuList']),
 		},
 		methods: {
-			
+			...mapActions('login',['getMenuList','getLoginUser']),
+			handleSelect(e){
+				console.log(e);
+			},
+			logout(){
+				this.$router.push('/login')
+			}
 		}
 	}
 </script>
-<style scoped="scoped">
-	.header .header-logo-img{
-		/**float: left;**/
-		margin-top: 8px;
-		width: 120px;
-		height: 50px;
-	}
-	
-	.header .el-menu--horizontal>.el-menu-item{
-		height: 70px;
-		line-height: 70px;
+<style lang="less">
+		
+	.header{
+		text-align: center;
+		background-color: #333333;
+		.header-logo-img{
+			/**float: left;**/
+			margin-top: 10px;
+			width: 120px;
+			height: 50px;
+		}
+		.el-menu{
+			.el-menu--horizontal {
+				border-bottom: solid 1px #333333;
+			}
+			.el-menu-item{
+				height: 70px;
+				line-height: 70px;
+			}
+		}
 	}
 	
 	.header .el-menu-item {
@@ -63,6 +95,10 @@
 	
 	.header .el-badge{
 		padding: 0px 10px 5px;
+	}
+	
+	.header .header-right{
+		margin: 24px 10px;
 	}
 	
 	.header .header-right a {

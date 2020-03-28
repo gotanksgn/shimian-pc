@@ -1,6 +1,6 @@
 <template>
 	<div class="footer">
-		<el-row :gutter="20" class="footer-content">
+		<el-row class="footer-content">
 			<el-col :span="3" class="footer-content-hidden">|</el-col>
 			<el-col :span="8" class="footer-content-download">
 				<dl>
@@ -48,35 +48,30 @@
 	}
 </script>
 
-<style>
+<style lang="less">
 	.footer{
+		text-align: center;
 		color: #ccc;
+		background-color: #333;
 		font-size: 12px;
 		line-height: 1.5em;
+		.footer-content{
+			height: 180px;
+			text-align: left;
+			.footer-content-download img{
+				width: 77px;
+				height: 77px;
+				margin-left: 30px;
+			}
+			.footer-content-hidden{
+				color:#333;
+			}
+			dl{
+				padding-top: 10px;
+			}
+			dd{
+				padding-bottom: 10px
+			}
+		}
 	}
-	
-	.footer .footer-content{
-		height: 180px;
-		text-align: left;
-	}
-	
-	.footer .footer-content .footer-content-download img{
-		width: 77px;
-		height: 77px;
-		margin-left: 30px;
-	}
-	
-	.footer .footer-content .footer-content-hidden{
-		color:#333;
-	}
-	
-	.footer .footer-content dl{
-		padding-top: 30px;
-	}
-	
-	.footer .footer-content dd{
-		padding-bottom: 12px
-	}
-	
-	
 </style>

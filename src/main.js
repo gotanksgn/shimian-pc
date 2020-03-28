@@ -12,7 +12,8 @@ import axios from 'axios';
 Vue.prototype.$axios = axios;
 
 Vue.use(ElementUI);
-// Vue.use(store);
+
+
 Vue.config.productionTip = false
 
 

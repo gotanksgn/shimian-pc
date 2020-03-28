@@ -3,7 +3,11 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 // 登录
 import Login from '@/views/login.vue';
-import Main from '@/views/main.vue';
+// 职位管理
+import JobManager from '@/views/job/jobManager.vue';
+
+// 面试间
+
 
 // 启用路由
 Vue.use(VueRouter);
@@ -17,7 +21,7 @@ export default new VueRouter({
         path: '/login',
         component: Login
     }, {
-        path: '/main',
-        component: Main
+        path: '/job-manager',
+        component: JobManager
     }]
 })
