@@ -62,7 +62,13 @@
 				console.log(e);
 			},
 			logout(){
-				this.$router.push('/login')
+				this.$confirm('您要退出视面?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.$router.push('/login');
+				});
 			}
 		}
 	}
@@ -78,54 +84,45 @@
 			width: 120px;
 			height: 50px;
 		}
-		.el-menu{
-			.el-menu--horizontal {
-				border-bottom: solid 1px #333333;
-			}
-			.el-menu-item{
-				height: 70px;
-				line-height: 70px;
+		.el-row{
+			.el-menu{
+				border-bottom:solid 0px ;
+				.el-menu-item{
+					padding: 0 60px;
+					height: 70px;
+					line-height: 70px;
+					.el-badge{
+						padding: 0px 10px 5px;
+					}
+				}
 			}
 		}
-	}
-	
-	.header .el-menu-item {
-		padding: 0 60px;
-	}
-	
-	.header .el-badge{
-		padding: 0px 10px 5px;
-	}
-	
-	.header .header-right{
-		margin: 24px 10px;
-	}
-	
-	.header .header-right a {
-		text-decoration: none;
-		outline: none;
-	}
-	
-	.header .header-info-text {
-		position: relative;
-		color: #fff;
-		font-size: 14px;
-		padding-right: 20px;
-	}
-	
-	.header .header-info-text:after {
-		content: '|';
-		color: #666;
-		position: absolute;
-		right: 0;
-		top: 2.5px;
-		line-height: 1em;
-	}
-	
-	.header .header-login-status {
-		color: #ffdc36;
-		font-size: 14px;
-		padding-left: 20px;
+		.header-right{
+			margin: 24px 10px;
+			a {
+				text-decoration: none;
+				outline: none;
+			}
+			.header-info-text {
+				position: relative;
+				color: #fff;
+				font-size: 14px;
+				padding-right: 20px;
+			}
+			.header-info-text:after {
+				content: '|';
+				color: #666;
+				position: absolute;
+				right: 0;
+				top: 2.5px;
+				line-height: 1em;
+			}
+			.header-login-status {
+				color: #ffdc36;
+				font-size: 14px;
+				padding-left: 20px;
+			}
+		}
 	}
 
 </style>
