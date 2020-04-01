@@ -6,15 +6,16 @@
 		<el-row>
 			<el-col :span="6">
 				<a class="logo" href="#">
-					<img src="../assets/logo.png" class="header-logo-img" alt="logo">
+					<img src="@/assets/img/logo.png" class="header-logo-img" alt="logo">
 				</a>
 			</el-col>
 			<el-col :span="12">
 				<el-menu :default-active="'0'"  mode="horizontal" @select="handleSelect" v-if="loginStatus"
 					background-color="#333" text-color="#fff" active-text-color="#ffd04b"> 
 					<el-menu-item  :index="idx.toString()" v-for="(item, idx) in menuList" :key="idx">
-						<a>	{{item.label}}
-							<el-badge v-if="item.count>0" :value="item.count" :max="99"></el-badge>
+						<a>	
+							{{item.label}}
+							<el-badge :value="item.count" :max="99" :hidden="item.resumeCount<=0"></el-badge>
 						</a>
 					</el-menu-item>
 				</el-menu>
@@ -80,25 +81,28 @@
 		background-color: #333333;
 		.header-logo-img{
 			/**float: left;**/
-			margin-top: 10px;
-			width: 120px;
-			height: 50px;
+			margin-top: 1vh;
+			width: 10vw;
+			height: 9vh;
 		}
 		.el-row{
 			.el-menu{
-				border-bottom:solid 0px ;
+				border-bottom:solid 0 ;
 				.el-menu-item{
-					padding: 0 60px;
-					height: 70px;
-					line-height: 70px;
+					font-size: 1.25rem;
+					width:30%;
+					height: 100%;
+					line-height: 10vh;
 					.el-badge{
-						padding: 0px 10px 5px;
+						position:absolute;
+						margin:0vh 0vw 0vh 1vw;
 					}
 				}
 			}
 		}
 		.header-right{
-			margin: 24px 10px;
+			margin: 4vh 2vw 0vh 10vw;
+			font-size: 1rem;
 			a {
 				text-decoration: none;
 				outline: none;
@@ -106,21 +110,17 @@
 			.header-info-text {
 				position: relative;
 				color: #fff;
-				font-size: 14px;
-				padding-right: 20px;
+				padding-right: 1vw;
 			}
 			.header-info-text:after {
 				content: '|';
 				color: #666;
 				position: absolute;
-				right: 0;
-				top: 2.5px;
-				line-height: 1em;
+				right: 0vh;
 			}
 			.header-login-status {
 				color: #ffdc36;
-				font-size: 14px;
-				padding-left: 20px;
+				padding: 0vh 0vw 0vh 1vw;
 			}
 		}
 	}

@@ -5,7 +5,7 @@
 			<el-col :span="8" class="footer-content-download">
 				<dl>
 					<dd>
-						<img src="../assets/JRZf.png" alt="duomian"/>
+						<img src="@/assets/img/JRZf.png" alt="duomian"/>
 					</dd>
 					<dd>
 						<p>扫码下载最新APP客户端</p>
@@ -14,16 +14,14 @@
 			</el-col>
 			<el-col :span="4" class="footer-content-information">
 				<dl>
-					<dd>公司简介</dd>
-					<dd>产品介绍</dd>
-					<dd>联系我们</dd>
+					<dd v-for="(item,idx) in homelinks" :key="idx"><el-link :href="item.link" :underline="false" target="_blank">{{item.title}}</el-link></dd>
 				</dl>
 			</el-col>
 			<el-col :span="6">
 				<dl>
-					<dd>北京嘉安国泰信息技术有限公司</dd>
-					<dd>京ICP备122010222号-4</dd>
-					<dd>客服电话：010-66668888</dd>
+					<dd>{{company}}</dd>
+					<dd>{{icp}}</dd>
+					<dd>{{telphone}}</dd>
 				</dl>
 			</el-col>
 			<el-col :span="3" class="footer-content-hidden">|</el-col>
@@ -39,7 +37,15 @@
 		name: 'pageFooter',
 		data() {
 			return {
-				copyright:'Copyright ©2019-2022 jagt All Rights Reserved'
+				telphone:'客服电话：010-66668888',
+				company:'北京嘉安国泰信息技术有限公司',
+				icp:'京ICP备17053558号-2',
+				copyright:'Copyright ©2019-2022 jagt All Rights Reserved',
+				homelinks:[
+					{title:'公司简介',link:'http://www.baidu.com'},
+					{title:'产品介绍',link:'http://www.baidu.com'},
+					{title:'联系我们',link:'http://www.baidu.com'}
+				]
 			};
 		},
 		methods: {
@@ -53,24 +59,32 @@
 		text-align: center;
 		color: #ccc;
 		background-color: #333;
-		font-size: 12px;
-		line-height: 1.5em;
+		font-size: 0.75rem;
+		line-height: 1.5rem;
 		.footer-content{
-			height: 180px;
 			text-align: left;
 			.footer-content-download img{
-				width: 77px;
-				height: 77px;
-				margin-left: 30px;
+				width: 6rem;
+				height: 6rem;
+				margin: 0rem 0rem 0rem 1.5rem;
 			}
 			.footer-content-hidden{
 				color:#333;
 			}
 			dl{
-				padding-top: 10px;
+				margin: 3.5rem 0rem 0rem 0rem;
 			}
 			dd{
-				padding-bottom: 10px
+				margin:1rem 0rem 1rem 0rem;
+				.el-link--inner{
+					font-size: 0.75rem;
+					color: #ccc;
+				}
+			}
+		}
+		.footer-copyright{
+			.grid-content{
+				margin: 1.5rem 7rem 1rem 0rem;	
 			}
 		}
 	}

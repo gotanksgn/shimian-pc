@@ -1,21 +1,16 @@
 <template>
-	<el-form :model="jobForm" :rules="rules" ref="jobForm" label-width="100px" class="form-job">
+	<el-form :model="jobForm" :rules="rules" ref="jobForm" label-width="8vw" class="form-job">
 		<el-form-item label="职位名称" prop="jobName" required>
 			<el-input v-model="jobForm.jobName"></el-input>
 		</el-form-item>
 		<el-form-item label="职位类别" prop="jobType" required>
 			<el-select v-model="jobForm.jobType" placeholder="请选择职位类别">
-				<el-option label="技术" value="tech"></el-option>
-				<el-option label="销售" value="sales"></el-option>
-				<el-option label="文秘" value="civil"></el-option>
+				<el-option v-for="(item,idx) in jobTypeOpts" :key="idx" label="item" value="item"></el-option>
 			</el-select>
 		</el-form-item>
 		<el-form-item label="工作性质" prop="jobProps" required>
 			<el-radio-group v-model="jobForm.jobProps">
-				<el-radio-button label="全职"></el-radio-button>
-				<el-radio-button label="兼职"></el-radio-button>
-				<el-radio-button label="实习"></el-radio-button>
-				<el-radio-button label="校园"></el-radio-button>
+				<el-radio-button v-for="(item, idx) in jobPropsOpts" :key="idx" :label="item" :value="item"></el-radio-button>
 			</el-radio-group>
 		</el-form-item>
 		<el-row>
@@ -61,8 +56,8 @@
 		</el-form-item>	
 		<el-form-item class="form-job-btns">
 			<el-button-group>
-				<el-button type="primary">职位预览</el-button>
-				<el-button type="primary" @click="submitForm('jobForm')">立即创建</el-button>
+				<el-button type="primary" @click="submitForm('jobForm')">职位保存</el-button>
+				<!-- <el-button type="success" @click="publishForm('jobForm')">职位发布</el-button> -->
 			</el-button-group>			
 		</el-form-item>
 	</el-form>
@@ -84,10 +79,12 @@
 					jobSales:'',
 					jobDesc:''
 				},
+				jobTypeOpts:['技术','管理','销售','行政','物业'],
+				jobPropsOpts:['全职','兼职','实习','校园'],
 				jobCityOpts:['北京','上海','苏州','杭州','天津','广州'],
 				jobExpOpts:['应届生','1年以内','1-3年','3-5年','5-10年','10年以上'],
 				jobDegreeOpts:['初中及以下','高中','中技','中专','大专','本科','硕士','MBA|EMBA','博士','博士后'],
-				jobSalesOpts:['3K-5K','5K-8K','8K-10K','10K-15K','15K-20K'],
+				jobSalesOpts:['3K-5K','5K-8K','8K-10K','10K-15K','15K-20K','20K以上'],
 				rules: {
 					jobName: [
 						{ required: true, message: '请输入职位名称', trigger: 'blur' },
@@ -125,18 +122,31 @@
 			submitForm(formName) {
 				this.$refs[formName].validate((valid) => {
 					if (valid) {
-						alert('submit!');
+						this.$alert('职位保存成功');
 					} else {
-						console.log('error submit!!');
 						return false;
 					}
 				});
 			},
-			resetForm() {
-				this.$refs.jobForm.resetFields();
+			publishForm(formName) {
+				this.$refs[formName].validate((valid) => {
+					if (valid) {
+						this.$alert('职位发布成功');
+					} else {
+						return false;
+					}
+				});
 			},
-			editForm(name){
-				this.jobForm.jobName=name;
+			editForm(item){
+				this.jobForm.jobName=item.name;
+				this.jobForm.jobType=item.jobType;
+				this.jobForm.jobProps=item.jobProps;
+				this.jobForm.jobCity=item.jobCity;
+				this.jobForm.jobAddress=item.jobAddress;
+				this.jobForm.jobExp=item.jobExp;
+				this.jobForm.jobDegree=item.jobDegree;
+				this.jobForm.jobSales=item.jobSales
+				this.jobForm.jobDesc=item.jobDesc;
 			}
 		}
 	}

@@ -1,15 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import data from './modules/data'
-import login from './modules/login.js'
+import login from './modules/login'
+import job from './modules/job'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   modules: {
-    data,
-	login
+	login,
+	job
   },
   strict: true,
 })

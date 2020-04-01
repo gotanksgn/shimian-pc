@@ -1,17 +1,34 @@
 import Vue from 'vue'
+import App from './App.vue'
+
+// 引入meta
+import VueMeta from 'vue-meta'
+Vue.use(VueMeta);
+
 // 引入element-ui
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import App from './App.vue'
+Vue.use(ElementUI);
+
+// 引入video-player
+import VideoPlayer from 'vue-video-player'
+import 'vue-video-player/src/custom-theme.css'
+import 'video.js/dist/video-js.css'
+Vue.use(VideoPlayer)
+
+// 引入aliyun-webrtc
+import AliyunWebRtc from 'aliyun-webrtc-sdk'
+Vue.use(AliyunWebRtc)
+
 // 引入路由
 import router from './router';
+
 // 引入状态管理
 import store from './store';
+
 // 引入axios
 import axios from 'axios';
 Vue.prototype.$axios = axios;
-
-Vue.use(ElementUI);
 
 
 Vue.config.productionTip = false
