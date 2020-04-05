@@ -7,10 +7,14 @@ import Login from '@/views/login.vue';
 import JobManager from '@/views/job/jobManager.vue';
 
 // 面试间
+import VideoManager from '@/views/video/videoManager.vue'
 import VideoRoom from '@/views/video/videoRoom.vue';
 
+//帮助中心
+import HelpManager from '@/views/help/helpManager.vue';
+
 // 测试
-import PlayerVideoDemo from '@/components/playerVideo.vue'
+import VideoDemo from '@/views/video/videoDemo'
 
 
 // 启用路由
@@ -28,11 +32,17 @@ export default new VueRouter({
         path: '/job-manager',
         component: JobManager
     }, {
+        path: '/video-manager',
+        component: VideoManager
+    }, {
         path: '/video-room',
         component: VideoRoom
     },{
         path: '/video-demo',
-        component: PlayerVideoDemo
+        component: VideoDemo
+    },{
+        path: '/help-manager',
+        component: HelpManager
     }
 	]
 })

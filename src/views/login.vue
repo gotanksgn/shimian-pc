@@ -80,14 +80,18 @@
 		},
 		methods: {
 			sendcode(){
-				this.$message({
-					message: '发送成功',
-					type: 'success',
-					center:true
+				this.$refs.loginForm.validateField('phone',valid=>{
+					if(valid==''){
+						this.$message({
+							message: '发送成功',
+							type: 'success',
+							center:true
+						});
+						this.time = 60;
+						this.disabled = true;
+						this.timer();
+					}
 				});
-				this.time = 60;
-				this.disabled = true;
-				this.timer();
 			},
 			gotoMain(){
 				this.$router.push('/job-manager');

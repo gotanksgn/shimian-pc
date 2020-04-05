@@ -4,7 +4,7 @@
 			<page-head loginStatus></page-head>
 		</el-header>
 		<el-main>
-			<div class="interview-container">
+			<div class="job-manager">
 				<div class="interview-top-wrap">
 					<div class="interview-top-border-wrap">
 						<dl class="interview-info-wrap">
@@ -23,7 +23,7 @@
 						<div class="job-header">
 							<el-row>
 								<el-col :span="16" class="job-header-pubjob"><a>我发布的职位</a>|<a>{{jobCount}}个</a></el-col>
-								<el-col :span="8" class="job-header-createjob"><el-button  icon="el-icon-plus" @click="createJob">创建职位</el-button></el-col>
+								<el-col :span="8" class="job-header-createjob"><el-button  icon="el-icon-plus" plain @click="createJob">创建职位</el-button></el-col>
 							</el-row>
 						</div>
 						<div class="job-container">
@@ -40,7 +40,7 @@
 												<h5>{{item.name}}</h5>
 											</div>
 											<div class="job-item-btns">
-												<el-badge :value="item.resumeCount" :max="99" :hidden="item.resumeCount<=0"><el-button type="primary"  @click="openResumes(item)">查看简历</el-button></el-badge>
+												<el-badge :value="item.resumeCount" :max="99" :hidden="item.resumeCount<=0"><el-button type="primary" plain  @click="openResumes(item)">查看简历</el-button></el-badge>
 											</div>
 											<!-- <el-badge value="已发布" type="success"></el-badge> -->
 										</div>
@@ -163,8 +163,8 @@
 	}
 </script>
 
-<style scoped="scoped" lang="less">	
-	.interview-container {
+<style lang="less">	
+	.job-manager {
 		width: 90vw;
 		min-height: 75vh;
 		background: #ffffff;

@@ -30,6 +30,10 @@ import store from './store';
 import axios from 'axios';
 Vue.prototype.$axios = axios;
 
+// 引入工具类
+import $date from '@/utils/date'
+Vue.prototype.$date=$date;
+
 
 Vue.config.productionTip = false
 

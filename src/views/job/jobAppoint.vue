@@ -1,57 +1,59 @@
 <template>
-<el-form :model="appointForm" ref="appointForm" label-width="10vw" 
-	:label-position="'left'" class="form-appoint" :rules="rules">
-		<el-form-item label="预约面试时间" prop="appointTime" required >
-			<div class="block">
-				<el-date-picker
-					v-model="appointForm.appointTime"
-					type="datetime"
-					placeholder="选择面试时间"
-					align="right"
-					:picker-options="appointPickerOpts">
-				</el-date-picker>
-			</div>
-		</el-form-item>
-		<h3>通知面试官</h3>
-		<el-row :gutter="20">
-			<el-col :span="12">
-				<el-form-item label="面试官" prop="hrName" required>
-					<el-input v-model="appointForm.hrName" readonly></el-input>
-				</el-form-item>
-			</el-col>
-			<el-col :span="12">
-				<el-form-item label="面试官电话" prop="hrPhone" required>
-					<el-input v-model="appointForm.hrPhone" readonly></el-input>
-				</el-form-item>
-			</el-col>	
-		</el-row>
-		<el-form-item label="通知内容" prop="hrNotice" required>
-			<el-input v-model="appointForm.hrNotice" type="textarea" :rows="3">
-			</el-input>
-		</el-form-item>
-		<h3>通知候选人</h3>
-		<el-row :gutter="20">
-			<el-col :span="12">
-				<el-form-item label="候选人" prop="userName" required>
-					<el-input v-model="appointForm.userName" readonly></el-input>
-				</el-form-item>
-			</el-col>
-			<el-col :span="12">
-				<el-form-item label="候选人电话" prop="userPhone" required>
-					<el-input v-model="appointForm.userPhone" readonly></el-input>
-				</el-form-item>
-			</el-col>	
-		</el-row>
-		<el-form-item label="通知内容" prop="userNotice" required>
-			<el-input v-model="appointForm.userNotice" type="textarea" :rows="3">
-			</el-input>
-		</el-form-item>
-		<el-form-item class="form-appoint-btns">
-			<el-button-group>
-				<el-button type="primary" @click="appoint()">立即预约</el-button>
-			</el-button-group>			
-		</el-form-item>
-	</el-form>
+	<div class="jobappoint">
+		<el-form :model="appointForm" ref="appointForm" label-width="10vw" 
+			:label-position="'left'" class="form-appoint" :rules="rules">
+			<el-form-item label="预约面试时间" prop="appointTime" required >
+				<div class="block">
+					<el-date-picker
+						v-model="appointForm.appointTime"
+						type="datetime"
+						placeholder="选择面试时间"
+						align="right"
+						:picker-options="appointPickerOpts">
+					</el-date-picker>
+				</div>
+			</el-form-item>
+			<h3>通知面试官</h3>
+			<el-row :gutter="20">
+				<el-col :span="12">
+					<el-form-item label="面试官" prop="hrName" required>
+						<el-input v-model="appointForm.hrName" readonly></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="12">
+					<el-form-item label="面试官电话" prop="hrPhone" required>
+						<el-input v-model="appointForm.hrPhone" readonly></el-input>
+					</el-form-item>
+				</el-col>	
+			</el-row>
+			<el-form-item label="通知内容" prop="hrNotice" required>
+				<el-input v-model="appointForm.hrNotice" type="textarea" :rows="3">
+				</el-input>
+			</el-form-item>
+			<h3>通知候选人</h3>
+			<el-row :gutter="20">
+				<el-col :span="12">
+					<el-form-item label="候选人" prop="userName" required>
+						<el-input v-model="appointForm.userName" readonly></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="12">
+					<el-form-item label="候选人电话" prop="userPhone" required>
+						<el-input v-model="appointForm.userPhone" readonly></el-input>
+					</el-form-item>
+				</el-col>	
+			</el-row>
+			<el-form-item label="通知内容" prop="userNotice" required>
+				<el-input v-model="appointForm.userNotice" type="textarea" :rows="3">
+				</el-input>
+			</el-form-item>
+			<el-form-item class="form-appoint-btns">
+				<el-button-group>
+					<el-button type="primary" @click="appoint()">立即预约</el-button>
+				</el-button-group>			
+			</el-form-item>
+		</el-form>
+	</div>
 </template>
 
 <script>
@@ -118,11 +120,26 @@
 				}
 			}
 		},
+		props: {
+			close: {
+				type: Function,
+				default: null
+			}
+		},
 		methods:{
 			appoint(){
-				this.$message({
-					message: '预约成功',
-					type: 'success'
+				let _this = this;
+				this.$refs.appointForm.validate((valid) => {
+					if (valid) {
+						this.$alert('预约成功', '', {
+							confirmButtonText: '确定',
+							callback(){
+								_this.close();
+							},
+						});
+					} else {
+						return false;
+					}
 				});
 			}
 		}
@@ -131,9 +148,11 @@
 </script>
 
 <style lang="less">
-	div .form-appoint{
-		.form-appoint-btns{
-			text-align: right;
+	.jobappoint{
+		.form-appoint{
+			.form-appoint-btns{
+				text-align: right;
+			}
 		}
 	}
 </style>

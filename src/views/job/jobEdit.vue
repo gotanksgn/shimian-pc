@@ -1,11 +1,12 @@
 <template>
+	<div>
 	<el-form :model="jobForm" :rules="rules" ref="jobForm" label-width="8vw" class="form-job">
 		<el-form-item label="职位名称" prop="jobName" required>
 			<el-input v-model="jobForm.jobName"></el-input>
 		</el-form-item>
 		<el-form-item label="职位类别" prop="jobType" required>
 			<el-select v-model="jobForm.jobType" placeholder="请选择职位类别">
-				<el-option v-for="(item,idx) in jobTypeOpts" :key="idx" label="item" value="item"></el-option>
+				<el-option v-for="(item,idx) in jobTypeOpts" :key="idx" :label="item" :value="item"></el-option>
 			</el-select>
 		</el-form-item>
 		<el-form-item label="工作性质" prop="jobProps" required>
@@ -61,6 +62,7 @@
 			</el-button-group>			
 		</el-form-item>
 	</el-form>
+	</div>
 </template>
 
 <script>

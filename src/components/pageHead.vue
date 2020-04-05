@@ -10,9 +10,9 @@
 				</a>
 			</el-col>
 			<el-col :span="12">
-				<el-menu :default-active="'0'"  mode="horizontal" @select="handleSelect" v-if="loginStatus"
-					background-color="#333" text-color="#fff" active-text-color="#ffd04b"> 
-					<el-menu-item  :index="idx.toString()" v-for="(item, idx) in menuList" :key="idx">
+				<el-menu :default-active="$route.path"  mode="horizontal" @select="handleSelect" v-if="loginStatus"
+					background-color="#333" text-color="#fff" active-text-color="#ffd04b" router> 
+					<el-menu-item  :index="item.route" v-for="(item, idx) in menuList" :key="idx">
 						<a>	
 							{{item.label}}
 							<el-badge :value="item.count" :max="99" :hidden="item.resumeCount<=0"></el-badge>

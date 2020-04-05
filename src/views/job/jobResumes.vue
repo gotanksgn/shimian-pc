@@ -1,5 +1,5 @@
 <template>
-	<div class="resume-table">
+	<div class="job-resumes">
 		<el-table :data="tableData" :stripe="true" class="resume-table-list">
 			<el-table-column :min-width="10" class="resume-table-headimg">
 				<template slot-scope="scope">
@@ -39,7 +39,7 @@
 			<player-video ref="playerVideo"></player-video>
 		</el-dialog>
 		<el-dialog :title="jobAppointTitle" :visible.sync="jobAppointVisible" width="50%" append-to-body :top="'1vh'" destroy-on-close>
-			<job-appoint ref="jobAppoint"></job-appoint>
+			<job-appoint ref="jobAppoint" :close="closeAppointJobDialog"></job-appoint>
 		</el-dialog>
 	</div>
 		
@@ -127,12 +127,6 @@
 			jobAppoint
 		},
 		methods: {
-			handleEdit(index, row) {
-				console.log(index, row);
-			},
-			handleDelete(index, row) {
-				console.log(index, row);
-			},
 			playVideoResume(item){
 				this.resumeVideoVisible=true;
 				this.resumeVideoTitle=item.name+"的视频简历";
@@ -153,13 +147,16 @@
 			appointJob(item){
 				this.jobAppointTitle="面试预约-"+item.name;
 				this.jobAppointVisible=true;
+			},
+			closeAppointJobDialog(){
+				this.jobAppointVisible=false;
 			}
 		}
 	}
 </script>
 
 <style lang="less">
-	.resume-table{
+	.job-resumes{
 		.resume-table-list{
 			.el-table__header{
 				display: none;

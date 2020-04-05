@@ -16,9 +16,9 @@ const actions = {
 	getMenuList({ commit }) {
 		setTimeout(() => {
 			commit("setMenuList", [
-				{label:'职位管理',uri:'job-manager'},
-				{label:'面试间',uri:'video-room',count:12},
-				{label:'帮助中心',uri:'sys-help'}])
+				{label:'职位管理',route:'/job-manager'},
+				{label:'面试间',route:'/video-manager',count:5},
+				{label:'帮助中心',route:'/help-manager'}])
 		}, 1000);
 	},
 	getLoginUser({ commit }) {
