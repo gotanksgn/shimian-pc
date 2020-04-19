@@ -9,11 +9,14 @@
 					<div class="interview-top-border-wrap">
 						<dl class="interview-info-wrap">
 							<dt>
-								<img src="~@/assets/img/job/headimg/head_0.png" alt="avatar">
+								<!-- <img src="~@/assets/img/job/headimg/head_0.png" alt="avatar"> -->
+								<el-avatar shape="square" :size="80" :src="staff.profilePicture" @error="errorHeadImgHandler">
+									<img src="@/assets/img/job/headimg/head_0.png"/>
+								</el-avatar>
 							</dt>
 							<dd>
 								<h3>{{hoursTip}}，面试官</h3>
-								<p>{{user.name}}</p>
+								<p>{{staff.fullname}}</p>
 							</dd>
 						</dl>
 					</div>
@@ -37,10 +40,10 @@
 												<a href="javascript:;" class="del-room" @click="delJob(item)"><span>删除</span></a>
 											</div>
 											<div class="job-info-wrap">
-												<h5>{{item.name}}</h5>
+												<h5>{{item.position||'未知'}}</h5>
 											</div>
 											<div class="job-item-btns">
-												<el-badge :value="item.resumeCount" :max="99" :hidden="item.resumeCount<=0"><el-button type="primary" plain  @click="openResumes(item)">查看简历</el-button></el-badge>
+												<el-badge :value="getSenderCount(item.senders)" :hidden="getSenderCount(item.senders)==0" :max="99" ><el-button type="primary" plain  @click="openResumes(item)">查看简历</el-button></el-badge>
 											</div>
 											<!-- <el-badge value="已发布" type="success"></el-badge> -->
 										</div>
@@ -52,7 +55,7 @@
 				</div>
 				<el-dialog :title="jobEditTitle" :visible.sync="jobEditVisible" 
 					:width="'65%'" :top="'10vh'" destroy-on-close>
-					<job-edit ref="jobEdit"></job-edit>
+					<job-edit ref="jobEdit" @handleClose="closeJob"></job-edit>
 				</el-dialog>
 				<el-dialog :title="jobResumesTitle" :visible.sync="jobResumesVisible" 
 					:width="'80%'" :fullscreen="true" destroy-on-close>
@@ -71,30 +74,15 @@
 	import pageFooter from '@/components/pageFooter.vue'
 	import jobEdit from '@/views/job/jobEdit.vue'
 	import jobResumes from '@/views/job/jobResumes.vue'
+	import {mapState,mapActions} from 'vuex'
 	export default {
 		name: 'jobManager',
 		data() {
 			return {
-				user:{
-					name:'刘先生'
-				},
-				jobList:[
-					{name:"区域销售总监",id:1,resumeCount:3,jobType: '管理',jobProps: '全职',jobCity: '北京',jobAddress: '北京市西城区广安门甲2号',jobExp:'5-10年',jobDegree:'硕士',jobSales:'20K以上',jobDesc:'负责公司XXXXX区域的销售管理XXXXX'},
-					{name:"研发总监",id:2,resumeCount:1,jobType: '管理',jobProps: '全职',jobCity: '上海',jobAddress: '上海市静安区长江路弄2',jobExp:'5-10年',jobDegree:'本科',jobSales:'15K-20K',jobDesc:'负责公司XXXXX区域的研发管理XXXXX'},
-					{name:"JAVA开发工程师",id:3,resumeCount:10,jobType: '技术',jobProps: '全职',jobCity: '苏州',jobAddress: '苏州市XXX区XXX路XXX号',jobExp:'3-5年',jobDegree:'本科',jobSales:'10K-15K',jobDesc:'负责XXX研发工作'},
-					{name:"VUE开发工程师",id:4,resumeCount:120,jobType: '技术',jobProps: '全职',jobCity: '杭州',jobAddress: '杭州市XXX区XXX路XXX号',jobExp:'3-5年',jobDegree:'本科',jobSales:'10K-15K',jobDesc:'负责XXX研发工作'},
-					{name:"PHP开发工程师",id:5,jobType: '技术',jobProps: '全职',jobCity: '上海',jobAddress: 'XXX区XXX路XXX号',jobExp:'3-5年',jobDegree:'本科',jobSales:'10K-15K',jobDesc:'负责XXX研发工作'},
-					{name:"NodeJs开发工程师",id:6,jobType: '技术',jobProps: '全职',jobCity: '北京',jobAddress: 'XXX区XXX路XXX号',jobExp:'3-5年',jobDegree:'本科',jobSales:'8K-10K',jobDesc:'负责XXX研发工作'},
-					{name:"需求分析师",id:7,jobType: '技术',jobProps: '全职',jobCity: '北京',jobAddress: 'XXX区XXX路XXX号',jobExp:'3-5年',jobDegree:'本科',jobSales:'8K-10K',jobDesc:'负责XXX研发工作'},
-					{name:"运维工程师",id:8,resumeCount:21,jobType: '技术',jobProps: '全职',jobCity: '北京',jobAddress: 'XXX区XXX路XXX号',jobExp:'3-5年',jobDegree:'本科',jobSales:'8K-10K',jobDesc:'负责XXX研发工作'},
-					{name:"测试工程师",id:9,jobType: '技术',jobProps: '全职',jobCity: '天津',jobAddress: 'XXX区XXX路XXX号',jobExp:'3-5年',jobDegree:'本科',jobSales:'8K-10K',jobDesc:'负责XXX研发工作'},
-					{name:"秘书",id:10,resumeCount:32,jobType: '行政',jobProps: '全职',jobCity: '广州',jobAddress: 'XXX区XXX路XXX号',jobExp:'1年以内',jobDegree:'大专',jobSales:'5K-8K',jobDesc:'负责公司XXXXX下XXXX事业部行政工作'},
-					{name:"售前工程师",id:11,resumeCount:2,jobType: '销售',jobProps: '全职',jobCity: '北京',jobAddress: 'XXX区XXX路XXX号',jobExp:'3-5年',jobDegree:'本科',jobSales:'15K-20K',jobDesc:'负责公司XXXXX区域的销售和售前工作'}
-				],
 				jobEditVisible:false,
 				jobEditTitle:'创建职位',
-				jobResumesVisible:false,
-				jobResumesTitle:'简历列表'
+				jobResumesVisible:false
+				
 			};
 		},
 		// 注册组件
@@ -105,48 +93,47 @@
 			jobResumes
 		},
 		computed: {
-			hoursTip:function(){
-				let date=new Date();
-				if(date.getHours()>=5 && date.getHours()<12){
-					return "早上好"
-				}else if(date.getHours()>=12 && date.getHours()<18){
-					return "下午好"
-				}else{
-					return "晚上好"
-				}
-			},
+			...mapState('login', ['user']),
+			...mapState('job', ['jobList','hoursTip','jobDialog','staff','jobResumesTitle']),
 			jobCount:function(){
 				return this.jobList.length;
 			}
 		},
+		created(){
+			this.getHoursTip();
+			this.getStaffInfo();
+			this.getJobList();
+		},
 		methods: {
+			...mapActions('job',['deletePosition','getHoursTip','getJobList','getJob','getStaffInfo']),
 			createJob: function(){
 				this.jobEditTitle='创建职位';
 				this.jobEditVisible = true;
-				this.$nextTick(function(){
-					this.$refs.jobEdit.resetForm();
-				});
 			},
 			delJob: function(job){
-				this.$confirm('您要删除该职位', '提示', {
+				this.$confirm('该职位下已投递'+this.getSenderCount(job.senders)+'个简历,您要删除该职位', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					this.$message({
-						message: '删除成功',
-						type: 'success'
+					this.deletePosition(job).then(()=>{
+						this.$message({
+							message: '删除成功',
+							type: 'success'
+						});
+					}).catch(()=>{
+						this.$message.error("删除失败");
 					});
-					this.jobList.splice(this.jobList.indexOf(job),1);
 				}).catch(() => {
-					
+					return false;
 				});
 			},
 			editJob: function(item){
 				this.jobEditTitle='修改职位';
 				this.jobEditVisible = true;
 				this.$nextTick(function(){
-					this.$refs.jobEdit.editForm(item)
+					this.$refs.jobEdit.editForm(item);
+					this.$store.commit('job/setCurrentPosition',item);
 				});
 			},
 			saveJob:function(){
@@ -154,10 +141,17 @@
 			},
 			openResumes:function(item){
 				this.jobResumesVisible=true;
-				this.jobResumesTitle=item.name+"丨"+(item.resumeCount==undefined?0:item.resumeCount)+"个简历";
-				this.$nextTick(function(){
-					
-				});
+				this.jobResumesTitle=item.position+"丨"+this.getSenderCount(item.senders)+"个简历";
+				this.getJob(item);
+			},
+			closeJob:function(){
+				this.jobEditVisible = false;
+			},
+			getSenderCount:function(senderList){
+				return senderList==undefined||senderList==null?0:senderList.length;
+			},
+			errorHeadImgHandler(){
+				return true;
 			}
 		}
 	}
@@ -180,11 +174,8 @@
 					float: left;
 					dt {
 						float: left;
-						img {
-							width: 9vw;
-							height: 16vh;
-							margin: 1vh 0vw 0vh 2vw;	
-						}
+						margin-left: 2em;
+						margin-top: 1em;
 					}
 					dd {
 						padding: 1vh 10vw 0vh 10vw;

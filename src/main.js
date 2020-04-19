@@ -31,12 +31,49 @@ import axios from 'axios';
 Vue.prototype.$axios = axios;
 
 // 引入工具类
-import $date from '@/utils/date'
-Vue.prototype.$date=$date;
+import util from '@/utils/index.js'
+Vue.prototype.$util=util;
 
 
 Vue.config.productionTip = false
 
+
+// 路由拦截器
+router.beforeEach((to, from, next) => {
+    if (to.matched.length != 0) {
+		//console.log('to.meta.requireAuth='+to.meta.requireAuth);
+        if (to.meta.requireAuth) { // 判断该路由是否需要登录权限
+			console.log("userInfo=>"+JSON.stringify(util.sstore.get("user")));
+			if (util.common.isNotEmpty(util.sstore.get("user"))) { // 通过vuex state获取当前的user是否存在
+                next();
+            } else {
+                next({
+                    path: '/login',
+                    query: { redirect: to.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                })
+            }
+        } else {
+			//console.log("user="+util.common.isNotEmpty(util.sstore.get("user")));
+            if (util.common.isNotEmpty(util.sstore.get("user"))) { // 判断是否登录
+                console.log("to.path="+to.path);
+				if (to.path != "/" && to.path != "/login") { //判断是否要跳到登录界面
+                    next();
+                } else {
+                    next({
+                        path: '/job-manager'
+                    })
+                }
+            } else {
+                next();
+            }
+        }
+    } else {
+        next({
+            path: '/login',
+            query: { redirect: to.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
+        })
+    }
+})
 
 /* eslint-disable no-new */
 new Vue({

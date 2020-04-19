@@ -69,7 +69,7 @@ let offset = function (ele) {
         pos.left += ele.offsetLeft;
         pos.top += ele.offsetTop;
         ele = ele.offsetParent;
-    };
+	};
     return pos;
 }
 

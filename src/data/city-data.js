@@ -1,0 +1,47 @@
+module.exports = [
+{
+	label: '热门城市',
+	options:[{
+		value:"北京",
+		label:"北京",
+	},{
+		value:"上海",
+		label:"上海",
+	},{
+		value:"广州",
+		label:"广州",
+	},{
+		value:"深圳",
+		label:"深圳",
+	}]},
+{
+	label:'其它城市',
+	options:[{
+		value:"南京",
+		label:"南京",
+	},{
+		value:"苏州",
+		label:"苏州",
+	},{
+		value:"杭州",
+		label:"杭州",
+	},{
+		value:"武汉",
+		label:"武汉",
+	},{
+		value:"大连",
+		label:"大连",
+	},{
+		value:"天津",
+		label:"天津",
+	},{
+		value:"重庆",
+		label:"重庆",
+	},{
+		value:"成都",
+		label:"成都",
+	},{
+		value:"西安",
+		label:"西安",
+	}
+]}]

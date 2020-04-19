@@ -4,12 +4,8 @@
 			:label-position="'left'" class="form-appoint" :rules="rules">
 			<el-form-item label="预约面试时间" prop="appointTime" required >
 				<div class="block">
-					<el-date-picker
-						v-model="appointForm.appointTime"
-						type="datetime"
-						placeholder="选择面试时间"
-						align="right"
-						:picker-options="appointPickerOpts">
+					<el-date-picker v-model="appointForm.appointTime"
+						type="datetime" placeholder="选择面试时间" align="right" @change="setNotice">
 					</el-date-picker>
 				</div>
 			</el-form-item>
@@ -27,8 +23,7 @@
 				</el-col>	
 			</el-row>
 			<el-form-item label="通知内容" prop="hrNotice" required>
-				<el-input v-model="appointForm.hrNotice" type="textarea" :rows="3">
-				</el-input>
+				<el-input v-model="appointForm.hrNotice" type="textarea" :rows="2"></el-input>
 			</el-form-item>
 			<h3>通知候选人</h3>
 			<el-row :gutter="20">
@@ -44,8 +39,7 @@
 				</el-col>	
 			</el-row>
 			<el-form-item label="通知内容" prop="userNotice" required>
-				<el-input v-model="appointForm.userNotice" type="textarea" :rows="3">
-				</el-input>
+				<el-input v-model="appointForm.userNotice" type="textarea" :rows="2"></el-input>
 			</el-form-item>
 			<el-form-item class="form-appoint-btns">
 				<el-button-group>
@@ -57,44 +51,22 @@
 </template>
 
 <script>
-	var todayStart = new Date(new Date(new Date().toLocaleDateString()).getTime()).getTime();
+	import {createInvitationApi} from '@/api/interviewFun.js'
+	import {mapActions} from 'vuex'
 	export default {
 		name:'jobAppoint', 
 		data() {
 			return {
 				appointForm: {
 					appointTime: '',
-					hrName:'刘先生',
-					hrPhone:'18801088888',
-					hrNotice:'您的同事为您创建了[job]职位的面试安排，请于[time]登陆http://www.shimianpower.com或通过视面APP对候选人进行视频面试。',
-					userName:'李女士',
-					userPhone:'13588888888',
-					userNotice:'仔细看过您的简历，觉得您比较适合我们公司[job]岗位，通知您[time]前登陆视面APP进行线上面试。'
+					hrName:'',
+					hrPhone:'',
+					hrNotice:'',
+					userName:'',
+					userPhone:'',
+					userNotice:''
 				},
-				appointPickerOpts:{
-					shortcuts: [{
-						text: '今天下午2点',
-						onClick(picker) {
-							const date = new Date();
-							date.setTime(todayStart + 3600*1000*14);
-							picker.$emit('pick', date);
-						}
-					}, {
-						text: '明天上午9点',
-						onClick(picker) {
-							const date = new Date();
-							date.setTime(todayStart + 3600*1000*(24+9));
-							picker.$emit('pick', date);
-						}
-					}, {
-						text: '明天下午2点',
-						onClick(picker) {
-							const date = new Date();
-							date.setTime(todayStart + 3600*1000*(24+14));
-							picker.$emit('pick', date);
-						}
-					}]
-				},
+				sender:{},
 				rules: {
 					appointTime: [
 						{required: true,message: '请选择预约时间', trigger: 'blur', type: 'date'}
@@ -126,21 +98,52 @@
 				default: null
 			}
 		},
+		computed:{
+			
+		},
 		methods:{
+			...mapActions('job',['getJobList']),
 			appoint(){
-				let _this = this;
 				this.$refs.appointForm.validate((valid) => {
 					if (valid) {
-						this.$alert('预约成功', '', {
-							confirmButtonText: '确定',
-							callback(){
-								_this.close();
-							},
+						createInvitationApi({
+							source: 'EN',
+							studentInfoId:this.sender.info.id,
+							studentResumeId: this.sender.resume.id,
+							enterprisePositionId: this.sender.position.id,
+							enterpriseStaffId: this.sender.staff.id,
+							senderId:this.sender.id,
+							appointmentTime:this.$util.date.format(this.appointForm.appointTime),
+							remark:this.appointForm.userNotice
+						}).then(()=>{
+							this.$message({
+								message: '预约成功',
+								type: 'success',
+								center:true
+							})
+							this.close();
+							this.getJobList();
 						});
 					} else {
 						return false;
 					}
 				});
+			},
+			edit(item){
+				this.sender=item.sender;
+				this.appointForm.hrName=this.sender.staff.fullname;
+				this.appointForm.hrPhone=this.sender.staff.phone;
+				this.appointForm.userName=this.sender.info.fullname;
+				this.appointForm.userPhone=this.sender.info.phone;
+			},
+			setNotice(){
+				if(this.appointForm.appointTime==undefined || this.appointForm.appointTime==null){
+					return;
+				}else{
+					let dateStr = this.$util.date.format(this.appointForm.appointTime,"yyyy/MM/dd hh:mm");
+					this.appointForm.hrNotice="您的同事为您创建了["+this.sender.position.position+"]职位的面试安排，请于["+dateStr+"]前登陆http://www.shimianpower.com或通过视面APP对候选人进行视频面试。"
+					this.appointForm.userNotice="仔细看过您的简历，觉得您比较适合我们公司["+this.sender.position.position+"]岗位，通知您["+dateStr+"]前登陆视面APP进行线上面试。";
+				}
 			}
 		}
 	}

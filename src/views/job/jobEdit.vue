@@ -1,13 +1,11 @@
 <template>
 	<div>
 	<el-form :model="jobForm" :rules="rules" ref="jobForm" label-width="8vw" class="form-job">
-		<el-form-item label="职位名称" prop="jobName" required>
-			<el-input v-model="jobForm.jobName"></el-input>
+		<el-form-item label="职位名称" prop="position" required>
+			<el-input v-model="jobForm.position"></el-input>
 		</el-form-item>
-		<el-form-item label="职位类别" prop="jobType" required>
-			<el-select v-model="jobForm.jobType" placeholder="请选择职位类别">
-				<el-option v-for="(item,idx) in jobTypeOpts" :key="idx" :label="item" :value="item"></el-option>
-			</el-select>
+		<el-form-item label="职位类别" prop="positionType" required>
+			<el-cascader v-model="jobForm.positionType" placeholder="请选择职位类别" :options="jobTypeOpts" :props="{expandTrigger:'hover'}"></el-cascader>
 		</el-form-item>
 		<el-form-item label="工作性质" prop="jobProps" required>
 			<el-radio-group v-model="jobForm.jobProps">
@@ -16,48 +14,53 @@
 		</el-form-item>
 		<el-row>
 			<el-col :span="8">
-				<el-form-item label="工作地址" prop="jobCity" required>
-					<el-select v-model="jobForm.jobCity">
-						<el-option v-for="(item, idx) in jobCityOpts" :key="idx" :label="item" :value="item"></el-option>
+				<el-form-item label="工作地址" prop="city" required>
+					<el-select v-model="jobForm.city">
+						<el-option-group v-for="group in jobCityOpts" :key="group.label" :label="group.label">
+							<el-option v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+						</el-option-group>
 					</el-select>
 				</el-form-item>
 			</el-col>
 			<el-col :span="16">
-				<el-form-item label="详细地址" prop="jobAddress" required>
-					<el-input v-model="jobForm.jobAddress"></el-input>
+				<el-form-item label="详细地址" prop="address" required>
+					<el-input v-model="jobForm.address"></el-input>
 				</el-form-item>
 			</el-col>	
 		</el-row>
 		<el-row>
 			<el-col :span="8">
-				<el-form-item label="经验要求" prop="jobExp" required>
-					<el-select v-model="jobForm.jobExp" placeholder="请选择经验要求">
+				<el-form-item label="经验要求" prop="workExp" required>
+					<el-select v-model="jobForm.workExp" placeholder="请选择经验要求">
 						<el-option v-for="(item, idx) in jobExpOpts" :key="idx" :label="item" :value="item"></el-option>
 					</el-select>
 				</el-form-item>
 			</el-col>			
 			<el-col :span="8">
-				<el-form-item label="最低学历" prop="jobDegree" required>
-					<el-select v-model="jobForm.jobDegree" placeholder="请选择学历">
+				<el-form-item label="最低学历" prop="degree" required>
+					<el-select v-model="jobForm.degree" placeholder="请选择学历">
 						<el-option v-for="(item, idx) in jobDegreeOpts" :key="idx" :label="item" :value="item"></el-option>
 					</el-select>
 				</el-form-item>
 			</el-col>
 			<el-col :span="8">
-				<el-form-item label="月薪范围" prop="jobSales" required>
-					<el-select v-model="jobForm.jobSales" placeholder="请选择月薪范围">
+				<el-form-item label="月薪范围" prop="salary" required>
+					<el-select v-model="jobForm.salary" placeholder="请选择月薪范围">
 						<el-option v-for="(item, idx) in jobSalesOpts" :key="idx" :label="item" :value="item"></el-option>
 					</el-select>
 				</el-form-item>
 			</el-col>
 		</el-row>
-		<el-form-item label="职位描述" prop="jobDesc" required>
+		<el-form-item label="职位描述" prop="positionDesc" required>
 			<el-input type="textarea" placeholder="请输入300字内的职位描述"
-				v-model="jobForm.jobDesc" maxlength="300" show-word-limit></el-input>
+				v-model="jobForm.positionDesc" maxlength="300" show-word-limit></el-input>
+		</el-form-item>
+		<el-form-item label="职位问题" prop="question">
+			<el-input placeholder="请输入20字内的职位问题" v-model="jobForm.question" maxlength="20" show-word-limit></el-input>
 		</el-form-item>	
 		<el-form-item class="form-job-btns">
 			<el-button-group>
-				<el-button type="primary" @click="submitForm('jobForm')">职位保存</el-button>
+				<el-button type="primary" @click="submitForm()">职位保存</el-button>
 				<!-- <el-button type="success" @click="publishForm('jobForm')">职位发布</el-button> -->
 			</el-button-group>			
 		</el-form-item>
@@ -70,85 +73,104 @@
 		name:'jobEdit', 
 		data() {
 			return {
-				jobForm: {
-					jobName: '',
-					jobType: '',
-					jobProps: '全职',
-					jobCity: '',
-					jobAddress: '',
-					jobExp:'',
-					jobDegree:'',
-					jobSales:'',
-					jobDesc:''
-				},
-				jobTypeOpts:['技术','管理','销售','行政','物业'],
-				jobPropsOpts:['全职','兼职','实习','校园'],
-				jobCityOpts:['北京','上海','苏州','杭州','天津','广州'],
-				jobExpOpts:['应届生','1年以内','1-3年','3-5年','5-10年','10年以上'],
-				jobDegreeOpts:['初中及以下','高中','中技','中专','大专','本科','硕士','MBA|EMBA','博士','博士后'],
-				jobSalesOpts:['3K-5K','5K-8K','8K-10K','10K-15K','15K-20K','20K以上'],
+				jobTypeOpts:require('@/data/work-function-data.js'),
+				jobPropsOpts:require('@/data/work-type-data.js'),
+				jobCityOpts:require('@/data/city-data.js'),
+				jobExpOpts:require('@/data/work-exp-data.js'),
+				jobDegreeOpts:require('@/data/degree-data.js'),
+				jobSalesOpts:require('@/data/work-salary-data.js'),
 				rules: {
-					jobName: [
+					position: [
 						{ required: true, message: '请输入职位名称', trigger: 'blur' },
 						{ min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
 					],
-					jobType: [
+					positionType: [
 						{ required: true, message: '请选择职位类别', trigger: 'change' }
 					],
 					jobProps: [
 						{ required: true, message: '请选择工作性质', trigger: 'change' }
 					],
-					jobCity: [
+					city: [
 						{ required: true, message: '请选择工作地址', trigger: 'change' }
 					],
-					jobAddress: [
+					address: [
 						{ required: true, message: '请填写详细地址', trigger: 'blur' }
 					],
-					jobExp: [
+					workExp: [
 						{ required: true, message: '请选择经验要求', trigger: 'change' }
 					],
-					jobDegree: [
+					degree: [
 						{ required: true, message: '请选择学历', trigger: 'change' }
 					],
-					jobSales: [
+					salary: [
 						{ required: true, message: '请选择月薪范围', trigger: 'change' }
 					],
-					jobDesc: [
+					positionDesc: [
 						{ required: true, message: '请填写职位描述', trigger: 'blur' },
 						{ max: 600, message: '职位描述不能超过300字', trigger: 'blur' }
+					],
+					question:[
+						{ max: 60, message: '职位描述不能超过30字', trigger: 'blur' }
 					]
+				},
+				jobForm:{
+					position: '',
+					positionType: '',
+					jobProps: '全职',
+					city:'',
+					address:'',
+					workExp:'',
+					degree:'',
+					salary:'',
+					positionDesc:'',
+					question:''
 				}
 			};
 		},
+		computed:{
+
+		},
+		created(){
+			
+		},
 		methods: {
-			submitForm(formName) {
-				this.$refs[formName].validate((valid) => {
+			submitForm() {
+				this.$refs.jobForm.validate((valid) => {
 					if (valid) {
-						this.$alert('职位保存成功');
+						this.$store.dispatch('job/savePosition',this.jobForm).then(()=>{
+							this.$message({
+								message: '职位保存成功',
+								type: 'success',
+								center:true
+							});
+							this.handleClose();
+						}).catch(error=>{
+							this.$message.error('职位保存失败：'+error.msg);
+						});
 					} else {
 						return false;
 					}
 				});
 			},
-			publishForm(formName) {
-				this.$refs[formName].validate((valid) => {
+			publishForm() {
+				this.$refs.jobForm.validate((valid) => {
 					if (valid) {
-						this.$alert('职位发布成功');
+						this.$message({
+							message: '职位发布成功',
+							type: 'success',
+							center:true
+						});
 					} else {
 						return false;
 					}
 				});
 			},
 			editForm(item){
-				this.jobForm.jobName=item.name;
-				this.jobForm.jobType=item.jobType;
-				this.jobForm.jobProps=item.jobProps;
-				this.jobForm.jobCity=item.jobCity;
-				this.jobForm.jobAddress=item.jobAddress;
-				this.jobForm.jobExp=item.jobExp;
-				this.jobForm.jobDegree=item.jobDegree;
-				this.jobForm.jobSales=item.jobSales
-				this.jobForm.jobDesc=item.jobDesc;
+				item.jobProps="全职";
+				Object.assign(this.jobForm,item);
+			}, 
+			handleClose() {
+				this.$emit('handleClose');
 			}
 		}
 	}

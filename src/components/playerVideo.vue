@@ -30,11 +30,9 @@
                      // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
                     fluid: true,
                     sources: [{
-                        //类型
-                        type: "video/mp4",
-                        //url地址
-                        src: '' 
-                    }],
+						"type":"video/mp4",
+						"src":"",
+					}],
                     //你的封面地址
                     poster: '', 
                      //允许覆盖Video.js无法播放媒体源时显示的默认信息。
@@ -47,18 +45,13 @@
                         fullscreenToggle: true  
                     }
                 }
- 
             }
         },
 		methods:{
-			play(src,posterSrc){
-				this.playerOptions.sources=[{
-                        //类型
-                        type: "video/mp4",
-                        //url地址
-                        src: src 
-                }];
+			play(sources,posterSrc){
+				console.log("posterSrc="+posterSrc);
 				this.playerOptions.poster=posterSrc;
+				this.playerOptions.sources = sources;
 			}
 		}
     }	

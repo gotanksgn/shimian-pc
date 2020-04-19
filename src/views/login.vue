@@ -40,15 +40,14 @@
 </template>
 
 <script>
-	import pageHead from '../components/pageHead.vue'
-	import pageFooter from '../components/pageFooter.vue'
-	import { mapState } from 'vuex'
-	//let loading;
+	import pageHead from '@/components/pageHead.vue'
+	import pageFooter from '@/components/pageFooter.vue'
+	import {mapState,mapActions} from 'vuex'
+	import {smscodeApi,tokenApi,userinfoApi} from '@/api/loginFun.js'
 	export default {
 		data() {
 			let validatePhone = (rule, value, callback) => {
-				const reg = 11 && /^((13|14|15|17|18|19)[0-9]{1}\d{8})$/;
-				if(!reg.test(value)){
+				if(!this.$util.regexp.isMobilePhone(value)){
 					callback(new Error('请输入正确的手机号'));	
 				}else{
 					callback();
@@ -76,38 +75,75 @@
 		},
 		computed:{
 			...mapState('login', ['user','menuList'])
-			
 		},
 		methods: {
+			...mapActions('login',['saveLoginInfo']),
 			sendcode(){
+				this.time = 60;
+				this.disabled = true;
+				this.timer();
 				this.$refs.loginForm.validateField('phone',valid=>{
 					if(valid==''){
-						this.$message({
-							message: '发送成功',
-							type: 'success',
-							center:true
+						smscodeApi(this.loginForm.phone).then(res=>{
+							if(res.code==0){
+								this.$message({
+									message: '发送成功',
+									type: 'success',
+									center:true
+								});
+							}else{
+								this.$message.error('发送失败');
+							}
 						});
-						this.time = 60;
-						this.disabled = true;
-						this.timer();
+
 					}
 				});
-			},
-			gotoMain(){
-				this.$router.push('/job-manager');
 			},
 			login(){
 				this.$refs.loginForm.validate((valid)=>{
 					if(valid){
-						let _this=this;
 						this.loginLoading=true;
-						setTimeout(()=>{
-							_this.$router.push('/job-manager');
-						}, 1500);
+						tokenApi(this.loginForm.phone,this.loginForm.sendcode).then(res=>{
+							this.loginTo(res);
+						}).catch(()=>{
+							this.$message.error("登陆失败");
+						});
 					}else{
 						return false;
 					}
 				});
+			},
+			loginTo(res){
+				if(res.code==0){
+					//token赋值
+					this.$util.sstore.set('token',res.data);
+					userinfoApi().then(res=>{//获取用户
+						if(res.code==0){
+							let user=res.data;
+							if(user.authFlag==true){
+								this.saveLoginInfo(res.data);
+								setTimeout(()=>{
+									this.$router.push('/job-manager');
+								},1000);
+							}else{
+								setTimeout(()=>{
+									this.$message.error("您的账号还未实名认证,请前往APP认证后再登陆");
+									this.loginLoading=false;
+								},1000);
+							}
+						}else{
+							this.$message.error(res.msg);
+							setTimeout(()=>{
+								this.loginLoading=false;
+							},1000);
+						}
+					});
+				}else{
+					this.$message.error(res.msg);
+					setTimeout(()=>{
+						this.loginLoading=false;
+					},1000);
+				}
 			},
 			//60S倒计时
 			timer() {

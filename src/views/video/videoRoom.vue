@@ -73,7 +73,8 @@
 					<el-col :span="15">
 						<div class="rtcVideoBox">
 							<video autoplay playsinline ref="localVideo" class="rtcVideo"></video>
-							<div class="video-run-info">
+							<video autoplay playsinline ref="remoteVideo" class="rtcRemoteVideo"></video>
+							<div class="video-run-info" v-if="videoChecking">
 								<el-row type="flex">
 									<el-col :span="24">
 										<p class="video-run-info-title">面试官，欢迎参加此次面试</p>
@@ -81,22 +82,30 @@
 								</el-row>
 								<el-row type="flex">
 									<el-col :span="16" :offset="10">
-										<el-progress :percentage="75" :stroke-width="20"  text-inside  status="exception" :format="videoProcessFormat"></el-progress>
+										<el-progress :percentage="100" :stroke-width="20"  text-inside  :status="processStatus" :format="processFormat"></el-progress>
 									</el-col>
 								</el-row>
 								<el-row type="flex">
-									<el-col :span="10" :offset="13">
-										<p class="video-run-info-sectitle">检测通过后即可进入面试间</p>
+									<el-col :span="24" :offset="13">
+										<p class="video-run-info-sectitle">{{videoEnterInfo}}</p>
 									</el-col>
 								</el-row>
 								<el-row type="flex">
 									<el-col :span="24">
 										<el-row type="flex">
 											<el-col :span="4" :offset="14">
+												<p class="video-run-info-check-label">协议检测</p>
+											</el-col>
+											<el-col :span="4">	
+												<p class="video-run-info-check-text" :class="checkStatus(supportCheck.https)">[{{supportCheck.https}}]</p>
+											</el-col>	
+										</el-row>
+										<el-row type="flex">
+											<el-col :span="4" :offset="14">
 												<p class="video-run-info-check-label">浏览器检测</p>
 											</el-col>
 											<el-col :span="4">	
-												<p class="video-run-info-check-text video-run-info-check-text-success">[通过]</p>
+												<p class="video-run-info-check-text" :class="checkStatus(supportCheck.browser)">[{{supportCheck.browser}}]</p>
 											</el-col>	
 										</el-row>
 										<el-row type="flex">
@@ -104,7 +113,7 @@
 												<p class="video-run-info-check-label">音频设备检测</p>
 											</el-col>
 											<el-col :span="4">	
-												<p class="video-run-info-check-text video-run-info-check-text-error">[不通过]</p>
+												<p class="video-run-info-check-text" :class="checkStatus(supportCheck.audio)">[{{supportCheck.audio}}]</p>
 											</el-col>	
 										</el-row>
 										<el-row type="flex">
@@ -112,7 +121,7 @@
 												<p class="video-run-info-check-label">视频设备检测</p>
 											</el-col>
 											<el-col :span="4">	
-												<p class="video-run-info-check-text video-run-info-check-text-wait">[检测中...]</p>
+												<p class="video-run-info-check-text" :class="checkStatus(supportCheck.video)">[{{supportCheck.video}}]</p>
 											</el-col>	
 										</el-row>																				
 									</el-col>	
@@ -152,6 +161,7 @@
 <script>
 	import pageHead from '@/components/pageHead.vue'
 	import pageFooter from '@/components/pageFooter.vue'
+	var aliWebrtc = new window.AliRtcEngine();
 	export default {
 		name: 'videoRoom',
 		data() {
@@ -182,24 +192,131 @@
 						},
 					]
 				},
+				videoChecking:true,
 				micVol:45,
-				openMic:true
+				openMic:true,
+				processStatus:'',
+				videoEnterInfo:'检测通过后即可进行视频面试',
+				supportCheck:{
+					isSupported:'',
+					https:'检测中',
+					browser:'检测中',
+					audio:'检测中',
+					video:'检测中'
+				}
 			}
 		},
 		computed:{
 			
 		},
+		watch:{
+			processPercentage(newV,oldV){
+				console.log('newV='+newV+',oldV='+oldV);
+			}
+		},
+		created(){
+			setTimeout(()=>{this.videoSupport();},2000);
+		},
 		methods:{
-			videoProcessFormat(percentage) {
-				if(percentage<100){
-					return "正在检测您的网络,请稍后...";
+			processFormat() {
+				if(this.processStatus==''){
+					return "正在检测您的设备...";
+				}else if(this.processStatus=='exception'){
+					return "抱歉,您的设备不支持视频面试";
 				}else{
-					return "检测完成";
+					return "恭喜您,您的设备检测成功";
 				}
 				
 			},
 			micSwitch(){
 				this.openMic = !this.openMic;
+			},
+			checkStatus(status){
+				if(status=='检测中'){
+					return 'video-run-info-check-text-wait';
+				}else if(status=='通过'){
+					return 'video-run-info-check-text-success';
+				}else if(status=='不通过'){
+					return 'video-run-info-check-text-error';
+				}else{
+					return 'video-run-info-check-text-error';
+				}
+			},
+			videoSupport(){
+				aliWebrtc.isSupport().then(re => {
+					console.log('success=>'+JSON.stringify(re));
+					this.setSupportInfo(re).then(()=>{
+						this.videoEnterInfo="正在进入房间,请稍等...";
+						setTimeout(()=>{
+							this.openLocalVideo();
+						},1500);
+					});
+				}).catch(error => {
+					console.log('error=>'+JSON.stringify(error));
+					this.setSupportInfo(error);
+				})
+			},
+			setSupportInfo(result){
+				let _this = this;
+				return new Promise(function (resolve) {
+					const checkDics=['https','browser','audio','video'];
+					let idx = 0;
+					let interval = setInterval(() => {
+						if(idx==checkDics.length){
+							_this.supportCheck.isSupported=result.isSupported;
+							_this.processPercentage=100;
+							_this.processStatus=result.isSupported?'success':'exception';
+							if(result.isSupported){
+								resolve();
+							}
+							clearInterval(interval);
+						}else{
+							if(checkDics[idx]=='https'){
+								if(result.errorCode==10021){
+									_this.supportCheck.https="不通过";
+								}else{
+									_this.supportCheck.https="通过";
+								}
+							}else if(checkDics[idx]=='browser'){
+								if(result.errorCode==10024 || result.errorCode==10020 || result.browser!='Chrome'){
+									_this.supportCheck.browser='不通过';
+								}else{
+									_this.supportCheck.browser='通过';
+								}
+							}else if(checkDics[idx]=='audio'){
+								_this.supportCheck.audio = result.audioDevice?'通过':'不通过';
+							}else if(checkDics[idx]=='video'){
+								_this.supportCheck.video = result.videoDevice?'通过':'不通过';
+							}
+						}
+						idx++;
+					},1000);
+				});
+			},
+			rtcAuth(channelId,userid){
+				let _this = this;
+				let apiUrl = 'https://mianshipower.com:9090/employ-aliyun-video-server/api/aliyun/auth/token?roomid='+channelId+'&userid='+this.userid;
+				const $http = _this.$axios.create({apiUrl});
+				return new Promise(function (resolve, reject) {
+					$http.get(apiUrl).then(response=>{
+						response.data.data.channel = channelId;
+						resolve(response.data.data);
+					}).catch(function (error) {
+						reject(error);
+					});
+				});
+			},
+			openLocalVideo(){
+				aliWebrtc.startPreview(this.$refs.localVideo).then(() => {
+					console.log("[开启预览成功]");
+					this.videoChecking=false;
+				}).catch((error) => { 
+					console.log("[开启预览失败]"+ error.message);
+				});
+			},
+			callVideo(){
+				let apiUrl = 'https://mianshipower.com:9090/employ-biz/api/interview/invitations';
+				const $http = _this.$axios.create({});
 			}
 		},
 		// 注册组件
@@ -286,6 +403,14 @@
 				width: 100%;
 				display: block;
 			}
+			.rtcRemoteVideo{
+				position: absolute;
+				background-color: red;
+				height: 25vh;
+				width: 15vw;
+				bottom:3vh;
+				right: 4.4vw;
+			}
 			.video-run-info{
 				position: absolute;
 				top:0vh;
@@ -307,6 +432,9 @@
 				.video-run-info-check-text{
 					font-size: 0.75em;
 					color: #F3F6F8;
+				}
+				.el-progress-bar__inner{
+					text-align: center;
 				}
 				.video-run-info-check-text-success{
 					color:#42B983;

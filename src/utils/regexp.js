@@ -18,7 +18,7 @@ let Regexp ={
      * @return {boolean} 
      */
     isMobilePhone(str) {
-        var reg = /(^(13[0-9]|14[0-9]|15[0-9]|18[0-9]|17[0-9])\d{8}$)/;
+        var reg = /(^(13[0-9]|14[0-9]|15[0-9]|18[0-9]|17[0-9]|19[0-9])\d{8}$)/;
         return reg.test(str);
     },
     /**
@@ -35,10 +35,10 @@ let Regexp ={
      * @param  {string}  str 待验证字符串
      * @return {boolean} 
      */
-    isUrl(str) {
+/*    isUrl(str) {
         var reg = /^((https?|ftp|file):\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
         return reg.test(str);
-    },
+    }, */
     /**
      * 判断是否是日期
      * @param  {string}  str 待验证字符串

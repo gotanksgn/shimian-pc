@@ -15,7 +15,7 @@ import HelpManager from '@/views/help/helpManager.vue';
 
 // 测试
 import VideoDemo from '@/views/video/videoDemo'
-
+import AutoLogin from '@/views/autoLogin.vue'
 
 // 启用路由
 Vue.use(VueRouter);
@@ -24,25 +24,55 @@ Vue.use(VueRouter);
 export default new VueRouter({
     routes: [{
         path: '/',
-        component: Login
+        component: Login,
+		hidden: true,
+		meta: {
+			requireAuth: false
+		}
     }, {
         path: '/login',
-        component: Login
+        component: Login,
+		hidden: true,
+		meta: {
+			requireAuth: false
+		}
+    }, {
+        path: '/auto-login',
+        component: AutoLogin,
+		hidden: true,
+		meta: {
+			requireAuth: false
+		}
     }, {
         path: '/job-manager',
-        component: JobManager
+        component: JobManager,
+		meta: {
+			requireAuth: true
+		}
     }, {
         path: '/video-manager',
-        component: VideoManager
+        component: VideoManager,
+		meta: {
+			requireAuth: true
+		}
     }, {
         path: '/video-room',
-        component: VideoRoom
+        component: VideoRoom,
+		meta: {
+			requireAuth: true
+		}
     },{
         path: '/video-demo',
-        component: VideoDemo
+        component: VideoDemo,
+		meta: {
+			requireAuth: false
+		}
     },{
         path: '/help-manager',
-        component: HelpManager
+        component: HelpManager,
+		meta: {
+			requireAuth: true
+		}
     }
 	]
 })

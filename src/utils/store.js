@@ -1,4 +1,4 @@
-let PRODUCT_NAME = 'ty';
+let PRODUCT_NAME = 'shimian';
 
 let store = {
     set(type, key, value) {
@@ -142,7 +142,7 @@ export let cookie = {
         if (index !== -1) {
             let tIndex = document.cookie.indexOf(";", index);
             let target = document.cookie.substring(index, tIndex);
-            let returnValue = decodeURIComponent(target.replace(key + "=", ""))
+            returnValue = decodeURIComponent(target.replace(key + "=", ""))
         }
         return returnValue;
     },

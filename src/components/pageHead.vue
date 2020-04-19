@@ -46,19 +46,13 @@
 		created:function(){
 			if(this.loginStatus){
 				this.getMenuList();
-				this.getLoginUser();
 			}
 		},
-/* 		watch:{
-			loginStatus(oldV,newV){
-				console.log('old='+oldV+',new='+newV);
-			}
-		}, */
 		computed:{
-			...mapState('login', ['user','menuList']),
+			...mapState('login', ['user','menuList'])
 		},
 		methods: {
-			...mapActions('login',['getMenuList','getLoginUser']),
+			...mapActions('login',['getMenuList']),
 			handleSelect(e){
 				console.log(e);
 			},
@@ -68,7 +62,8 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					this.$router.push('/login');
+					this.$store.commit('login/logout');
+					this.$router.push({path: '/login' });
 				});
 			}
 		}
