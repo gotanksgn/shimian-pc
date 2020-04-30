@@ -1,4 +1,5 @@
 import {enterpriseStaffsApi,enterprisePositionsApi,savePositionApi,deletePositionApi} from '@/api/jobFun.js'
+import {lstore} from '@/utils/store.js'
 /**
  * 职位管理
  */
@@ -9,13 +10,11 @@ const state = {
 	],
 	staff:{},
 	currentPosition: {},
-	currentJob:{},
-	jobResumesTitle:'简历列表'
+	currentJob:{}
 }
 
 
 const getters = {
-  
 }
 
 const actions = {
@@ -43,8 +42,18 @@ const actions = {
 	getJobList({commit}){
 		enterprisePositionsApi(true,true).then(res=>{
 			if(res.code==0){
-				res.data.forEach(function(item){
+				let resumeCount = 0;
+				res.data.forEach(function(item,idx){
 					commit('pushPositionList',item);
+					if(item.senders!=undefined && item.senders!=null){
+						resumeCount=resumeCount+item.senders.length;
+					}
+					console.log("item="+item.id+"，resumeCount="+resumeCount);
+					if(idx==res.data.length-1){
+						setTimeout(()=>{
+							commit('login/setMenuCount',{id:1,count:resumeCount}, {root: true});
+						},2000);
+					}
 				});
 			}else{
 				console.log(res.msg);
@@ -95,6 +104,7 @@ const mutations = {
 	},
 	pushPositionList(state,data){
 		let curObj = state.jobList.filter(e=>e.id===data.id)[0];
+		console.log("curObj="+JSON.stringify(curObj));
 		if(curObj){
 			Object.assign(curObj, data);
 		}else{
@@ -111,13 +121,11 @@ const mutations = {
 		}else{
 			state.currentJob = {};
 		}
-		let senderList = data.sender;
-		let senderCount = (senderList==undefined||senderList==null)?0:senderList.length
-		state.jobResumesTitle=data.position+"丨"+senderCount+"个简历"
-		console.log("setCurrentJob=>"+JSON.stringify(state.currentJob));
+		/* console.log("setCurrentJob=>"+JSON.stringify(state.currentJob)); */
 	},
 	setStaffInfo(state,data){
 		state.staff=Object.assign({},data);
+		lstore.set("staff",state.staff);
 	}
 }
 

@@ -5,9 +5,7 @@
 	<div class="header">
 		<el-row>
 			<el-col :span="6">
-				<a class="logo" href="#">
-					<img src="@/assets/img/logo.png" class="header-logo-img" alt="logo">
-				</a>
+				<img src="@/assets/img/logo_word2.png" class="header-logo-img" alt="logo">
 			</el-col>
 			<el-col :span="12">
 				<el-menu :default-active="$route.path"  mode="horizontal" @select="handleSelect" v-if="loginStatus"
@@ -15,7 +13,7 @@
 					<el-menu-item  :index="item.route" v-for="(item, idx) in menuList" :key="idx">
 						<a>	
 							{{item.label}}
-							<el-badge :value="item.count" :max="99" :hidden="item.resumeCount<=0"></el-badge>
+							<el-badge :value="item.count" :max="99" :hidden="item.count<=0"></el-badge>
 						</a>
 					</el-menu-item>
 				</el-menu>
@@ -70,27 +68,25 @@
 	}
 </script>
 <style lang="less">
-		
 	.header{
-		text-align: center;
 		background-color: #333333;
 		.header-logo-img{
-			/**float: left;**/
-			margin-top: 1vh;
-			width: 10vw;
-			height: 9vh;
+			margin-left: 2vw;
+			margin-top: 1.5vh;
+			max-width: 8vw;
 		}
 		.el-row{
 			.el-menu{
+				text-align: center;
 				border-bottom:solid 0 ;
 				.el-menu-item{
 					font-size: 1.25rem;
-					width:30%;
+					width:25%;
 					height: 100%;
 					line-height: 10vh;
 					.el-badge{
 						position:absolute;
-						margin:0vh 0vw 0vh 1vw;
+						margin:0rem 0rem 0rem 0.25rem;
 					}
 				}
 			}

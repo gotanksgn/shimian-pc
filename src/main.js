@@ -26,6 +26,7 @@ import router from './router';
 // 引入状态管理
 import store from './store';
 
+
 // 引入axios
 import axios from 'axios';
 Vue.prototype.$axios = axios;
@@ -33,6 +34,24 @@ Vue.prototype.$axios = axios;
 // 引入工具类
 import util from '@/utils/index.js'
 Vue.prototype.$util=util;
+
+// 引入goeasy
+import GoEasy from 'goeasy';
+//创建全局GoEasy对象
+Vue.prototype.$goEasy = new GoEasy({
+	host:'hangzhou.goeasy.io', //应用所在的区域地址: 【hangzhou.goeasy.io |singapore.goeasy.io】
+	appkey: "BS-63a91f09bd3c42ad83b5b9250314e05a", //替换为您的应用appkey
+	onConnected: function() {
+		console.log('连接成功！')
+	},
+	onDisconnected: function() {
+		console.log('连接断开！')
+	},
+	onConnectFailed: function(error) {
+		console.log('连接失败或错误！'+JSON.stringify(error))
+	}
+});
+
 
 
 Vue.config.productionTip = false
@@ -43,8 +62,8 @@ router.beforeEach((to, from, next) => {
     if (to.matched.length != 0) {
 		//console.log('to.meta.requireAuth='+to.meta.requireAuth);
         if (to.meta.requireAuth) { // 判断该路由是否需要登录权限
-			console.log("userInfo=>"+JSON.stringify(util.sstore.get("user")));
-			if (util.common.isNotEmpty(util.sstore.get("user"))) { // 通过vuex state获取当前的user是否存在
+			console.log("userInfo=>"+JSON.stringify(util.lstore.get("user")));
+			if (util.common.isNotEmpty(util.lstore.get("user"))) { // 通过vuex state获取当前的user是否存在
                 next();
             } else {
                 next({
@@ -54,7 +73,7 @@ router.beforeEach((to, from, next) => {
             }
         } else {
 			//console.log("user="+util.common.isNotEmpty(util.sstore.get("user")));
-            if (util.common.isNotEmpty(util.sstore.get("user"))) { // 判断是否登录
+            if (util.common.isNotEmpty(util.lstore.get("user"))) { // 判断是否登录
                 console.log("to.path="+to.path);
 				if (to.path != "/" && to.path != "/login") { //判断是否要跳到登录界面
                     next();

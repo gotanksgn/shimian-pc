@@ -54,11 +54,11 @@
 					</div>
 				</div>
 				<el-dialog :title="jobEditTitle" :visible.sync="jobEditVisible" 
-					:width="'65%'" :top="'10vh'" destroy-on-close>
+					:width="'65%'" :top="'5vh'" destroy-on-close :close-on-click-modal="false">
 					<job-edit ref="jobEdit" @handleClose="closeJob"></job-edit>
 				</el-dialog>
 				<el-dialog :title="jobResumesTitle" :visible.sync="jobResumesVisible" 
-					:width="'80%'" :fullscreen="true" destroy-on-close>
+					:width="'80%'" :top="'5vh'" destroy-on-close :close-on-click-modal="false">
 					<job-resumes ref="jobResumes"></job-resumes>
 				</el-dialog>
 			</div>
@@ -81,8 +81,8 @@
 			return {
 				jobEditVisible:false,
 				jobEditTitle:'创建职位',
-				jobResumesVisible:false
-				
+				jobResumesVisible:false,
+				jobResumesTitle:'简历列表'
 			};
 		},
 		// 注册组件
@@ -94,7 +94,7 @@
 		},
 		computed: {
 			...mapState('login', ['user']),
-			...mapState('job', ['jobList','hoursTip','jobDialog','staff','jobResumesTitle']),
+			...mapState('job', ['jobList','hoursTip','jobDialog','staff']),
 			jobCount:function(){
 				return this.jobList.length;
 			}
@@ -141,7 +141,7 @@
 			},
 			openResumes:function(item){
 				this.jobResumesVisible=true;
-				this.jobResumesTitle=item.position+"丨"+this.getSenderCount(item.senders)+"个简历";
+				this.jobResumesTitle=item.position;
 				this.getJob(item);
 			},
 			closeJob:function(){
@@ -249,7 +249,7 @@
 							top:-16vh;
 							h5{
 								color: #FFFFFF;
-								font-size: 1.25em;
+								font-size: 1em;
 								font-weight: normal;
 								overflow: hidden;
 								text-overflow: ellipsis;
@@ -258,13 +258,16 @@
 						}
 						.job-item-btns{
 							position:relative;
-							margin: -6em 0vw 1em 0vw;
+							margin: -5em 0vw 1em 0vw;
 						}
 					}
 					
 				}
 				
 			}
+		}
+		.el-dialog__body{
+			padding:0px 20px;
 		}
 	}
 </style>

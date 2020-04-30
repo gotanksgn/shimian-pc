@@ -138,10 +138,17 @@ export let cookie = {
      */
     get: function (key) {
         let index = document.cookie.indexOf(key);
+		/* console.log("cookie_index="+index+"key="+key); */
+		/* console.log("document.cookie="+document.cookie) */
         let returnValue;
         if (index !== -1) {
             let tIndex = document.cookie.indexOf(";", index);
+			//如果没有;号则为最后一个
+			if(tIndex==-1){
+				tIndex=document.cookie.length;
+			}
             let target = document.cookie.substring(index, tIndex);
+			/* console.log("tIndex="+tIndex+",target="+target); */
             returnValue = decodeURIComponent(target.replace(key + "=", ""))
         }
         return returnValue;

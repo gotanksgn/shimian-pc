@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<el-input  v-model="channelId"></el-input>
 		<el-input  v-model="userName"></el-input>
 		<el-input  v-model="remoteUserName"></el-input>
 		<el-button @click="info">获取设备信息</el-button>
@@ -30,7 +31,6 @@
 
 <script>
 	var aliWebrtc = new window.AliRtcEngine();
-	var channelId = 'dmroom';
 	export default {
 		name: 'videoRoom',
 		data() {
@@ -38,8 +38,9 @@
 				deviceInfo:'',
 				userlist:'',
 				supportInfo:'',
-				userName:'damao',
-				remoteUserName:'xiaobai'
+				userName:'184266506184509440',
+				remoteUserName:'184389596193310720',
+				channelId:'c64a4050-4b36-454b-ada1-9ac9b25a6f45'
 			}
 		},
 		created(){
@@ -58,7 +59,7 @@
 			},
 			rtcAuth(){
 				let _this = this;
-				let apiUrl = 'https://mianshipower.com:9090/employ-aliyun-video-server/api/aliyun/auth/token?roomid='+channelId+'&userid='+this.userName;
+				let apiUrl = 'https://mianshipower.com:9090/employ-aliyun-server/api/rtc/auth/token?roomid='+this.channelId+'&userid='+this.userName;
 				const $http = _this.$axios.create({
 					apiUrl
 				});
@@ -66,7 +67,7 @@
 					$http.get(apiUrl).then(response=>{
 						_this.authInfo = JSON.stringify(response.data.data)
 						console.log('5:'+JSON.stringify(response.data));
-						response.data.data.channel = channelId;
+						response.data.data.channel = _this.channelId;
 						console.log('7:'+JSON.stringify(response.data));
 						resolve(response.data.data);
 					}).catch(function (error) {
@@ -155,7 +156,9 @@
 				console.log(this.$refs.remoteVideo)
 				aliWebrtc.configRemoteCameraTrack(this.remoteUserName, true, true);
 				aliWebrtc.configRemoteAudio(this.remoteUserName, true);
-				aliWebrtc.subscribe(this.remoteUserName).then().catch((error) => {
+				aliWebrtc.subscribe(this.remoteUserName).then(
+					console.log('订阅成功')
+				).catch((error) => {
 					console.log('订阅失败'+error.message);
 				});
 				aliWebrtc.setDisplayRemoteVideo(this.remoteUserName, this.$refs.remoteVideo, 1);
@@ -183,7 +186,7 @@
 			height: 40vh;
 			width: 30vw;
 			display: block;
-			background-color: black;
+			background-color: red;
 		}
 	}
 	.remote-video{
@@ -192,7 +195,7 @@
 			height: 40vh;
 			width: 30vw;
 			display: block;
-			background-color: black;
+			background-color: green;
 		}
 	}
 

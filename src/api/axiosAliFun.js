@@ -1,37 +1,15 @@
 /**
- * 统一调用封装入口
+ * 阿里API封装入口
  * create by gemini.liu
  */
 import axios from 'axios';
 import qs from 'qs';
 import util from '@/utils/index.js';
-const API_DOMAIN_PREFIX = 'https://mianshipower.com:9090/employ-biz';
+const API_DOMAIN_PREFIX = 'https://mianshipower.com:9090/employ-aliyun-server';
 
-// 登录请求方法
-const loginreq = (method, url, params) => {
-    return axios({
-        method: method,
-		baseURL:API_DOMAIN_PREFIX,
-        url: url,
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-        },
-		responseType: 'json',
-		traditional: true,
-		transformRequest: [function (data){
-			return qs.stringify(data);
-		}],
-        data: params
-    }).then(res =>{
-		//console.log(res);
-		return res.data;
-	}).catch(error=>{
-		//console.log(error.response);
-		return error.response.data;
-	});
-};
+
 // 通用公用方法
-const req = (method, url, params) => {
+const aliReq = (method, url, params) => {
     return axios({
         method: method,
 		baseURL:API_DOMAIN_PREFIX,
@@ -48,7 +26,7 @@ const req = (method, url, params) => {
 			return qs.stringify(data);
         }]
     }).then(res =>{
-		console.log("url="+url+",res="+JSON.stringify(res.data));
+		//console.log("url="+url+",res="+JSON.stringify(res.data));
 		return res.data;
 	}).catch(error=>{
 		console.log("url="+url+",error=>"+JSON.stringify(error));
@@ -62,6 +40,5 @@ const req = (method, url, params) => {
 };
 
 export {
-    loginreq,
-    req
+    aliReq
 }

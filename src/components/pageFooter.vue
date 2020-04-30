@@ -37,14 +37,14 @@
 		name: 'pageFooter',
 		data() {
 			return {
-				telphone:'客服电话：010-66668888',
-				company:'北京嘉安国泰信息技术有限公司',
+				telphone:'电话：010-5352****',
+				company:'北京龙马中外企业家服务有限公司',
 				icp:'京ICP备17053558号-2',
 				copyright:'Copyright ©2019-2022 jagt All Rights Reserved',
 				homelinks:[
-					{title:'公司简介',link:'http://www.baidu.com'},
-					{title:'产品介绍',link:'http://www.baidu.com'},
-					{title:'联系我们',link:'http://www.baidu.com'}
+					{title:'公司简介',link:'https://www.shimianpower.com'},
+					{title:'产品介绍',link:'https://www.shimianpower.com'},
+					{title:'联系我们',link:'https://www.shimianpower.com'}
 				]
 			};
 		},

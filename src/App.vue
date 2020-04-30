@@ -24,7 +24,7 @@ export default {
 		margin:0vh;
 		position:relative;
 		#app{
-			font-family: "Avenir", Helvetica, Arial, sans-serif;
+			font-family: "microsoft yahei";
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;
 			widows: 100%;

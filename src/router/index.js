@@ -8,10 +8,13 @@ import JobManager from '@/views/job/jobManager.vue';
 
 // 面试间
 import VideoManager from '@/views/video/videoManager.vue'
-import VideoRoom from '@/views/video/videoRoom.vue';
+/* import VideoRoom from '@/views/video/videoRoom.vue'; */
 
 //帮助中心
 import HelpManager from '@/views/help/helpManager.vue';
+
+//简历市场
+import ResumeMarket from '@/views/resume/resumeMarket.vue';
 
 // 测试
 import VideoDemo from '@/views/video/videoDemo'
@@ -55,13 +58,14 @@ export default new VueRouter({
 		meta: {
 			requireAuth: true
 		}
-    }, {
+    },/* {
         path: '/video-room',
         component: VideoRoom,
 		meta: {
 			requireAuth: true
 		}
-    },{
+    }, */
+	{
         path: '/video-demo',
         component: VideoDemo,
 		meta: {
@@ -70,6 +74,12 @@ export default new VueRouter({
     },{
         path: '/help-manager',
         component: HelpManager,
+		meta: {
+			requireAuth: true
+		}
+    },{
+        path: '/resume-market',
+        component: ResumeMarket,
 		meta: {
 			requireAuth: true
 		}

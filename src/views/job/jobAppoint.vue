@@ -117,7 +117,7 @@
 							remark:this.appointForm.userNotice
 						}).then(()=>{
 							this.$message({
-								message: '预约成功',
+								message: '预约成功,可前往面试间查看面试进度',
 								type: 'success',
 								center:true
 							})

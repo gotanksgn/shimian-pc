@@ -1,36 +1,45 @@
 <template>
-	<el-container class="login">	
-		<el-main class="login-wrap">
-			<el-row>
-				<el-col :span="8" :offset="14">
-					<el-form label-position="left" :model="loginForm" :rules="rules" ref="loginForm"  class="login-container">
-						<h3 class="login-container-title">登陆即可开启视频面试</h3>
-						<el-form-item prop="phone">
-							<el-input type="text" v-model="loginForm.phone" auto-complete="off" placeholder="请输入手机号"></el-input>
-						</el-form-item>
-						<el-form-item prop="sendcode" class="login-container-code">
-							<el-input v-model="loginForm.sendcode" placeholder="请输入验证码" @keyup.enter.native="login()">
-								<el-button slot="append" @click="sendcode" :disabled="disabled">{{btntxt}}</el-button>
-							</el-input>
-						</el-form-item>
-						<el-form-item class="login-container-submit">
-							<el-button type="primary"  @click="login()" :loading="loginLoading">登录</el-button>
-						</el-form-item>
-						<el-form-item class="login-container-ysxy">
-							<el-link type="info">《视面用户协议》</el-link>
-							<el-link type="info">《隐私协议》</el-link>
-						</el-form-item>
-					</el-form>
-				</el-col>
-			</el-row>
+	<el-container>
+ 		<el-header>
+			<page-head></page-head>
+		</el-header>
+		<el-main>
+			<div class="login-wrap">
+				<el-row>
+					<el-col :span="16">
+						<el-image fit="contain" :src="require('@/assets/img/login/login_bg.png')"></el-image>
+					</el-col>
+					<el-col :span="8">
+						<el-form label-position="left" :model="loginForm" :rules="rules" ref="loginForm"  class="login-container">
+							<h3 class="login-container-title">登陆即可开启视频面试</h3>
+							<el-form-item prop="phone">
+								<el-input type="text" v-model="loginForm.phone" auto-complete="off" placeholder="请输入手机号"></el-input>
+							</el-form-item>
+							<el-form-item prop="sendcode" class="login-container-code">
+								<el-input v-model="loginForm.sendcode" placeholder="请输入验证码">
+									<el-button slot="append" @click="sendcode" :disabled="disabled">{{btntxt}}</el-button>
+								</el-input>
+							</el-form-item>
+							<el-form-item class="login-container-submit">
+								<el-button type="primary"  @click="login()" :loading="loginLoading">登录</el-button>
+							</el-form-item>
+							<el-form-item class="login-container-ysxy">
+								<el-link type="info">《视面用户协议》</el-link>
+								<el-link type="info">《隐私协议》</el-link>
+							</el-form-item>
+						</el-form>
+					</el-col>
+				</el-row>
+			</div>					
 		</el-main>
 		<el-footer>
 			<page-footer></page-footer>
-		</el-footer>	
-	</el-container>	
+		</el-footer>
+	</el-container>
 </template>
 
 <script>
+	import pageHead from '@/components/pageHead.vue'
 	import pageFooter from '@/components/pageFooter.vue'
 	import {mapState,mapActions} from 'vuex'
 	import {smscodeApi,tokenApi,userinfoApi} from '@/api/loginFun.js'
@@ -150,66 +159,64 @@
 		},
 		// 注册组件
 		components: {
+			/* pageHead, */
 			pageFooter
 		},
 		// 创建完毕状态(里面是操作)
 		created() {
-			if(this.$util.common.getExplore()!='Chrome'){
-				this.$message({
-					message: '浏览器版本过低，页面可能无法正常显示或部分功能无法正常使用，请更换Chrome浏览器',
-					type: 'error',
-					duration:0
-				});
-			}
-/* 			if(this.$util.common.isNotEmpty(this.$util.lstore.get("user"))){
-				this.
-			} */
+		
 		}
 	}
 
 </script>
 
-<style lang="less">
-	.login{
-		height: 120vh;
-		background-color: black !important;
-		background: url(~@/assets/img/login/login_bg1.png) #333 no-repeat top center / 90vw auto;
-		.login-wrap {
-			box-sizing: border-box;
-			.login-container {
-				min-width: 20rem;
-				border-radius: 1rem;
-				margin: 10vh 8vw;
-				padding: 1rem 2rem;
-				background: #fff;
-				border: 0.1em solid #eaeaea;
+<style scoped lang="less">
+	.login-wrap {
+		box-sizing: border-box;
+		img{
+			margin: 12vh 0vw 0vh 0vw;
+			width: 105%;
+		}
+		.login-container {
+			border-radius: 2vh;
+			margin: 8vh 0vw 0vh 3vw;
+			width:25vw;
+			min-height: 48vh;
+			padding: 3vh 2vw 0vh 2vw;
+			background: #fff;
+			border: 0.1em solid #eaeaea;
+			text-align: left;
+			box-shadow: 0 0 2em 0.1em rgba(0, 0, 0, 0.1);
+			.login-container-title {
+				margin: 7vh auto 7vh auto;
 				text-align: left;
-				box-shadow: 0 0 2em 0.1em rgba(0, 0, 0, 0.1);
-				.login-container-title {
-					margin: 2rem 0rem;
-					text-align: left;
-					color: #505458;
+				color: #505458;
+			}
+			.login-container-code{
+/* 				.el-input {
+					width: 55%;
+					float: left;
+					display: inline-block;
+	
 				}
-				.login-container-code{
-
-				}
-				.login-container-submit{
-					.el-button {
-						width:100%;
-					}
-				}
-				.login-container-ysxy{
-					width: 100%;
-					text-align: right;
-					.el-link{
-						font-size: 0.75em;
-					} 
+				.el-button {
+					width: 45%;
+					float: left;
+					display: inline-block;
+				} */
+			}
+			.login-container-submit{
+				.el-button {
+					width:100%;
 				}
 			}
-		}
-		.footer{
-			background-color: black;
+			.login-container-ysxy{
+				width: 100%;
+				text-align: right;
+				.el-link{
+					font-size: 0.75em;
+				} 
+			}
 		}
 	}
-	
 </style>

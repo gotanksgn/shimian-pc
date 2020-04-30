@@ -1,14 +1,15 @@
 <template>
 	<div class="job-resumes">
-		<el-table :data="tableData" :stripe="true" class="resume-table-list">
-			<el-table-column :min-width="10" class="resume-table-headimg">
+		<el-divider content-position="left">共收到{{tableData.length}}份投递</el-divider>
+		<el-table :data="tableData" :stripe="true" class="resume-table-list" :height="500">
+			<el-table-column :min-width="80" c8lass="resume-table-headimg">
 				<template slot-scope="scope">
-					<el-avatar shape="square" :size="80" :src="scope.row.headImg" @error="errorHeadImgHandler">
+					<el-avatar shape="square" :size="70" :src="scope.row.headImg" @error="errorHeadImgHandler">
 						<img src="@/assets/img/job/headimg/head_999.png"/>
 					</el-avatar>
 				</template>
 			</el-table-column>
-			<el-table-column :min-width="15">
+			<el-table-column :min-width="120">
 				<template slot-scope="scope">
 					<div class="resume-table-name resume-table-name-fullname">{{scope.row.name}}</div>
 					<div>
@@ -17,7 +18,7 @@
 					</div>
 				</template>
 			</el-table-column>	
-			<el-table-column :min-width="25" class="resume-table-edu">
+			<el-table-column :min-width="200" class="resume-table-edu">
 				<template slot-scope="scope">
 					<div class="resume-table-name">{{scope.row.edu}}</div>
 					<div>
@@ -26,7 +27,7 @@
 					</div>
 				</template>
 			</el-table-column>
-			<el-table-column :min-width="20" class="resume-table-target">
+			<el-table-column :min-width="200" class="resume-table-target">
 				<template slot-scope="scope">
 					<div class="resume-table-name">{{scope.row.positionType}}</div>
 					<div>
@@ -35,26 +36,22 @@
 					</div>
 				</template>
 			</el-table-column>
-			<el-table-column :min-width="20" class="resume-table-video">
+			<el-table-column :min-width="350" class="resume-table-video">
 				<template slot-scope="scope">
-					<el-button  @click="playVideo(scope.row,'视频简历')" type="primary" plain>简历<i class="el-icon-video-camera-solid el-icon--right"></i></el-button>
-					<el-button @click="playVideo(scope.row,'视频问答')" type="primary" plain>问答<i class="el-icon-video-camera el-icon--right"></i></el-button>
-				</template>
-			</el-table-column>		
-			<el-table-column :min-width="20" class="resume-table-btn">
-				<template slot-scope="scope">
-					<el-button @click="viewResumeInfo(scope.row)" plain>查看简历</el-button>
-					<el-button @click="appointJob(scope.row)" type="danger" plain>约一下</el-button>
+					<el-button size="small" @click="playVideo(scope.row,'视频简历')" type="primary" >简历<i class="el-icon-video-camera-solid el-icon--right"></i></el-button>
+					<el-button size="small" @click="playVideo(scope.row,'视频问答')" type="primary" >问答<i class="el-icon-video-camera el-icon--right"></i></el-button>
+					<el-button size="small" @click="viewResumeInfo(scope.row)" type="primary" >查看简历</el-button>
+					<el-button size="small" @click="appointJob(scope.row)" type="danger" >约一下</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
-		<el-dialog :title="resumeVideoTitle" :visible.sync="resumeVideoVisible" width="50%" append-to-body destroy-on-close>
+		<el-dialog :title="resumeVideoTitle" :visible.sync="resumeVideoVisible" width="50%" append-to-body destroy-on-close :close-on-click-modal="false">
 			<player-video ref="playerVideo"></player-video>
 		</el-dialog>
-		<el-dialog :title="jobAppointTitle" :visible.sync="jobAppointVisible" width="50%" append-to-body :top="'1vh'" destroy-on-close>
+		<el-dialog :title="jobAppointTitle" :visible.sync="jobAppointVisible" width="50%" append-to-body :top="'2vh'" destroy-on-close>
 			<job-appoint ref="jobAppoint" :close="closeAppointJobDialog"></job-appoint>
 		</el-dialog>
-		<el-dialog :title="resumeInfoTitle" :visible.sync="resumeInfoVisible" width="50%" append-to-body :top="'1vh'" destroy-on-close>
+		<el-dialog :title="resumeInfoTitle" :visible.sync="resumeInfoVisible" width="50%" append-to-body :top="'2vh'" destroy-on-close>
 			<resume-info ref="resumeInfo"></resume-info>
 		</el-dialog>
 	</div>
@@ -86,26 +83,30 @@
 				get(){
 					let result =[]; 
 					if(this.currentJob.senders!=undefined && this.currentJob.senders!=null){
-						this.currentJob.senders.forEach(sender=>
-							result.push({
-									id:sender.id,
-									name:sender.info.fullname,
-									age:sender.info.age,
-									headImg:sender.info.profilePicture,
-									city:sender.info.city,
-									spec:sender.resume.edus[0].major,
-									edu:sender.resume.edus[0].college,
-									degree:sender.resume.edus[0].degree,
-									positionType:sender.resume.target.positionType,
-									trade:sender.resume.target.trade,
-									targetCity:sender.resume.target.city,
-									salary:sender.resume.target.salary,
-									videoid:sender.resume.vcrs[0].videoId,
-									questionid:sender.answerVideoId,
-									sender:sender
-								}
-							)
-						);
+						this.currentJob.senders.forEach(sender=>{
+							if(sender){
+								/* for(let i=0;i<=10;i++){ */
+								result.push({
+										id:sender.id,
+										name:sender.info.fullname,
+										age:sender.info.age,
+										headImg:sender.info.profilePicture,
+										city:sender.info.city,
+										spec:sender.resume.edus[0].major,
+										edu:sender.resume.edus[0].college,
+										degree:sender.resume.edus[0].degree,
+										positionType:sender.resume.target.positionType,
+										trade:sender.resume.target.trade,
+										targetCity:sender.resume.target.city,
+										salary:sender.resume.target.salary,
+										videoid:sender.resume && sender.resume.vcrs && sender.resume.vcrs.length>0?sender.resume.vcrs[0].videoId:'',
+										questionid:sender.answerVideoId,
+										sender:sender
+									}
+								)
+								/* } */
+							}
+						});
 					}
 					return result;
 				}
@@ -125,7 +126,7 @@
 						videoId=item.questionid;
 					}
 					if(videoId!=undefined && videoId!=null && videoId!=''){
-						getVodPlayApi(videoId).then(res=>{
+						getVodPlayApi({"videoId":videoId}).then(res=>{
 							console.log(JSON.stringify(res));
 							res.data.playInfoList.forEach(playInfo=>{
 								sources.push({
@@ -176,6 +177,7 @@
 
 <style lang="less">
 	.job-resumes{
+		min-height: 50vh;
 		.resume-table-list{
 			.el-table__header{
 				display: none;
@@ -196,7 +198,8 @@
 				font-size: 1.25em;
 			}
 			.el-tag{
-				margin-right: 1em;
+				margin-right: 0.5em;
+				font-size: 0.75em;
 			}
 
 		}

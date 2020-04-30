@@ -9,7 +9,7 @@
 							<el-input type="text" v-model="loginForm.phone" auto-complete="off" placeholder="请输入手机号"></el-input>
 						</el-form-item>
 						<el-form-item prop="sendcode" class="login-container-code">
-							<el-input v-model="loginForm.sendcode" placeholder="请输入验证码" @keyup.enter.native="login()">
+							<el-input v-model="loginForm.sendcode" placeholder="请输入验证码">
 								<el-button slot="append" @click="sendcode" :disabled="disabled">{{btntxt}}</el-button>
 							</el-input>
 						</el-form-item>
@@ -25,13 +25,21 @@
 			</el-row>
 		</el-main>
 		<el-footer>
-			<page-footer></page-footer>
+			<el-row class="footer-content">
+					<el-col :span="4" :offset="1" class="footer-content-download">
+						<img src="@/assets/img/JRZf.png" alt="duomian"/>
+					</el-col>
+			</el-row>
+			<el-row class="footer-copyright">
+				<el-col :span="12">{{footData.company}}</el-col>
+				<el-col :span="6">{{footData.icp}}</el-col>
+				<el-col :span="6">{{footData.copyright}}</el-col>
+			</el-row>
 		</el-footer>	
 	</el-container>	
 </template>
 
 <script>
-	import pageFooter from '@/components/pageFooter.vue'
 	import {mapState,mapActions} from 'vuex'
 	import {smscodeApi,tokenApi,userinfoApi} from '@/api/loginFun.js'
 	export default {
@@ -60,7 +68,12 @@
 						{ required: true, message: '请输入验证码', trigger: 'blur' }
 					]
 				},
-				loginLoading:false
+				loginLoading:false,
+				footData:{
+					company:"北京龙马中外企业家服务有限公司",
+					icp:"京ICP备17053558号-2",
+					copyright:"Copyright ©2019-2022"	
+				}
 			}
 		},
 		computed:{
@@ -150,20 +163,10 @@
 		},
 		// 注册组件
 		components: {
-			pageFooter
 		},
 		// 创建完毕状态(里面是操作)
 		created() {
-			if(this.$util.common.getExplore()!='Chrome'){
-				this.$message({
-					message: '浏览器版本过低，页面可能无法正常显示或部分功能无法正常使用，请更换Chrome浏览器',
-					type: 'error',
-					duration:0
-				});
-			}
-/* 			if(this.$util.common.isNotEmpty(this.$util.lstore.get("user"))){
-				this.
-			} */
+		
 		}
 	}
 
@@ -171,45 +174,80 @@
 
 <style lang="less">
 	.login{
-		height: 120vh;
-		background-color: black !important;
-		background: url(~@/assets/img/login/login_bg1.png) #333 no-repeat top center / 90vw auto;
+		width: 100vw;
+		height:100vh;
+		background-color: #01081b !important;
+		@media screen and (max-width: 960px){
+			background: url(~@/assets/img/login/login_bg1.png) #333 no-repeat top left / 864px 486px;
+		}
+		@media screen and (min-width: 960px) and (max-width: 1440px) {
+			/* background: url(~@/assets/img/login/login_bg1.png) #333 no-repeat top left / 1366px 622px; */
+			background: url(~@/assets/img/login/login_bg1.png) #333 no-repeat top center / 1105px 622px;
+		}
+		@media screen and (min-width:1440px) {
+			background: url(~@/assets/img/login/login_bg1.png) #333 no-repeat top center / 1728px 936px;
+		}
 		.login-wrap {
-			box-sizing: border-box;
-			.login-container {
-				min-width: 20rem;
-				border-radius: 1rem;
-				margin: 10vh 8vw;
-				padding: 1rem 2rem;
-				background: #fff;
-				border: 0.1em solid #eaeaea;
-				text-align: left;
-				box-shadow: 0 0 2em 0.1em rgba(0, 0, 0, 0.1);
-				.login-container-title {
-					margin: 2rem 0rem;
+				box-sizing: border-box;
+				.login-container {
+					border-radius: 2vh;
+					margin: 5rem 0rem 0rem 8rem;
+					@media screen and (max-width: 960px){
+						width:150px;
+					}
+					@media screen and (min-width: 960px) and (max-width: 1440px) {
+						width:300px;
+					}
+					@media screen and (min-width:1440px) {
+						width:400px;
+					}
+					padding: 3vh 2vw 0vh 2vw;
+					background: #fff;
+					border: 0.1em solid #eaeaea;
 					text-align: left;
-					color: #505458;
-				}
-				.login-container-code{
+					box-shadow: 0 0 2em 0.1em rgba(0, 0, 0, 0.1);
+					.login-container-title {
+						margin: 7vh auto 7vh auto;
+						text-align: left;
+						color: #505458;
+					}
+					.login-container-code{
 
-				}
-				.login-container-submit{
-					.el-button {
-						width:100%;
+					}
+					.login-container-submit{
+						.el-button {
+							width:100%;
+						}
+					}
+					.login-container-ysxy{
+						width: 100%;
+						text-align: right;
+						.el-link{
+							font-size: 0.75em;
+						} 
 					}
 				}
-				.login-container-ysxy{
-					width: 100%;
-					text-align: right;
-					.el-link{
-						font-size: 0.75em;
-					} 
+			}
+		.el-footer{
+			.footer-content{
+				.footer-content-download{
+					img{
+						width: 5rem;
+					}
 				}
 			}
-		}
-		.footer{
-			background-color: black;
-		}
+			.footer-copyright{
+				position: absolute;
+				bottom: 0rem;
+				right: 4rem;
+				width: 40rem;
+				color: #AAAAAA;
+				font-size: 0.5rem;
+				margin-top: 0vh;
+				text-align: right;
+			}
+		}	
+		
 	}
 	
 </style>

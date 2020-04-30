@@ -1,10 +1,10 @@
-import {sstore} from '@/utils/store.js'
+import {lstore} from '@/utils/store.js'
 import {enterprisePositionsApi} from '@/api/jobFun.js'
 /**
  * 系统登陆
  */
 const state = {
-	user: sstore.get("user"),
+	user: lstore.get("user"),
 	menuList: []
 }
 
@@ -14,14 +14,14 @@ const getters = {
 
 const actions = {
 	getMenuList({ commit }) {
-		let jobCount = 0;
 		enterprisePositionsApi(false,false).then(
-			res=>{
-				jobCount = res.data.length;
+			()=>{
 				commit("setMenuList", [
-					{label:'职位管理',route:'/job-manager',count:jobCount},
-					{label:'面试间',route:'/video-manager'},
-					{label:'帮助中心',route:'/help-manager'}]);
+					{id:1,label:'职位管理',route:'/job-manager'},
+					{id:2,label:'面试间',route:'/video-manager'},
+					{id:3,label:'简历市场',route:'/resume-market'}
+					/**,{id:4,label:'帮助中心',route:'/help-manager'}**/
+					]);
 			}
 		);
 	},
@@ -37,12 +37,23 @@ const mutations = {
 	// 登录
 	login(state,user) {
 		state.user = user;
-		sstore.set("user",state.user);
+		lstore.set("user",state.user);
 	},
 	// 退出
 	logout() {
-		sstore.clear("user");
-		sstore.clear("token");
+		lstore.clear("user");
+		lstore.clear("token");
+	},
+	setMenuCount(state,data){
+		/* console.log("state.menuList2="+state.menuList); */
+		let list = Object.assign([],state.menuList);
+		for(let i=0;i<list.length;i++){
+			if(list[i].id==data.id){
+				list[i].count=data.count;
+			}
+		}
+		state.menuList=Object.assign([],list);
+		console.log("state.menuList3="+state.menuList);
 	}
 }
 

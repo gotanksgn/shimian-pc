@@ -36,19 +36,21 @@
 			} 
 		},
 		created(){
-			this.selfToken=this.$util.lstore.get("token");
+			this.selfToken=this.$util.cookie.get("debug_token");
 		},
 		methods:{
 			autologin:function(){
 				if(this.selfToken!=null && this.selfToken!=''){
 					this.loginLoading=true;
 					this.$util.lstore.set("token",this.selfToken);
-					this.$util.sstore.set("token",this.selfToken);
 					userinfoApi().then(res=>{//获取用户
 						if(res.code==0){
+							//赋值debug_token
+							this.$util.cookie.set("debug_token",this.selfToken);
+							//跳转
 							let user=res.data;
 							if(user.authFlag==true){
-								this.$store.dispatch('login/saveLoginInfo',res.data);
+								this.$store.dispatch('login/saveLoginInfo',user);
 								setTimeout(()=>{
 									this.$router.push('/job-manager');
 								},3000);
