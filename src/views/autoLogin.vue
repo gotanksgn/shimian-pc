@@ -4,6 +4,9 @@
 			<el-col :span="6" :offset="1">
 				<el-switch v-model="debug" active-text="DEBUG模式" inactive-text="非DEBUG模式" @change="debugFun(debug)"></el-switch>
 			</el-col>
+			<el-col :span="6" :offset="1">
+				<el-switch v-model="autoload" active-text="自动刷新" inactive-text="关闭自动刷新" @change="autoloadFun(autoload)"></el-switch>
+			</el-col>
 		</el-row>
 		<el-row type="flex">
 			<el-col :span="2" :offset="1">token:</el-col>
@@ -32,7 +35,8 @@
 				loginuser:'',
 				selfToken:'',
 				loginLoading:false,
-				debug:window.localStorage.getItem("shimian_debug")!=null?window.localStorage.getItem("shimian_debug"):false
+				autoload:window.localStorage.getItem("autoload_mode")!=null?window.localStorage.getItem("autoload_mode"):false,
+				debug:window.localStorage.getItem("debug_mode")!=null?window.localStorage.getItem("debug_mode"):false
 			} 
 		},
 		created(){
@@ -68,6 +72,10 @@
 			debugFun(mode){
 				this.debug=mode;
 				window.localStorage.setItem("debug_mode",mode);
+			},
+			autoloadFun(mode){
+				this.autoload=mode;
+				window.localStorage.setItem("autoload_mode",mode);
 			}
 		}
 	}

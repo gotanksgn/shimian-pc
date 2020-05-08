@@ -116,12 +116,15 @@
 							appointmentTime:this.$util.date.format(this.appointForm.appointTime),
 							remark:this.appointForm.userNotice
 						}).then(()=>{
-							this.$message({
-								message: '预约成功,可前往面试间查看面试进度',
-								type: 'success',
-								center:true
-							})
-							this.close();
+							this.$confirm('预约成功,是否直接前往面试间?', '预约成功', {
+								confirmButtonText: '前往面试间',
+								cancelButtonText: '稍后前往',
+								type: 'success'
+							}).then(() => {
+								this.$router.push('/video-manager');
+							}).catch(() => {
+								this.close();         
+							});	
 							this.getJobList();
 						});
 					} else {

@@ -16,10 +16,7 @@ export const getInvitationsWaitByStaffApi=(data)=>{return req('get','/api/interv
 export const getInvitationsUnevaluatedByStaffApi=(data)=>{return req('get','/api/interview/invitations/by-staffid/2',data)}
 
 //获取已结束面试邀请
-export const getInvitationsFinishByStaffApi=(data)=>{
-	data.limit=100;
-	return req('get','/api/interview/invitations/by-staffid/3',data)
-}
+export const getInvitationsFinishByStaffApi=(data)=>{return req('get','/api/interview/invitations/by-staffid/3',data)}
 
 //获取已处理面试邀请
 

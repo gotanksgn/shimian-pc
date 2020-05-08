@@ -16,17 +16,17 @@ const getters = {
 
 const actions = {
 	getWaitList({commit}){
-		getInvitationsWaitByStaffApi({"staffId":lstore.get("staff").id}).then(res=>{
+		getInvitationsWaitByStaffApi({"staffId":lstore.get("staff").id,"limit":100}).then(res=>{
 			commit("setWaitList",res.data);
 		});
 	},
 	getUnevaluatedList({commit}){
-		getInvitationsUnevaluatedByStaffApi({"staffId":lstore.get("staff").id}).then(res=>{
+		getInvitationsUnevaluatedByStaffApi({"staffId":lstore.get("staff").id,"limit":100}).then(res=>{
 			commit("setUnevaluatedList",res.data);
 		});
 	},
 	getDoneList({commit}){
-		getInvitationsFinishByStaffApi({"staffId":lstore.get("staff").id}).then(res=>{
+		getInvitationsFinishByStaffApi({"staffId":lstore.get("staff").id,"limit":100}).then(res=>{
 			commit("setDoneList",res.data);
 		});
 	}

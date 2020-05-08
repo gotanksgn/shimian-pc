@@ -35,25 +35,6 @@ Vue.prototype.$axios = axios;
 import util from '@/utils/index.js'
 Vue.prototype.$util=util;
 
-// 引入goeasy
-import GoEasy from 'goeasy';
-//创建全局GoEasy对象
-Vue.prototype.$goEasy = new GoEasy({
-	host:'hangzhou.goeasy.io', //应用所在的区域地址: 【hangzhou.goeasy.io |singapore.goeasy.io】
-	appkey: "BS-63a91f09bd3c42ad83b5b9250314e05a", //替换为您的应用appkey
-	onConnected: function() {
-		console.log('连接成功！')
-	},
-	onDisconnected: function() {
-		console.log('连接断开！')
-	},
-	onConnectFailed: function(error) {
-		console.log('连接失败或错误！'+JSON.stringify(error))
-	}
-});
-
-
-
 Vue.config.productionTip = false
 
 

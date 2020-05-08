@@ -167,6 +167,9 @@
 <script>
 	import {rtcAuthApi} from '@/api/videoFun.js'
 	import {pushCallApi} from '@/api/interviewFun.js'
+	// 引入goeasy
+	import GoEasy from 'goeasy';
+	var $goEasy;
 	//定义aliWebrtc服务
 	var aliWebrtc = new window.AliRtcEngine();
 	//订阅用户调度
@@ -243,7 +246,20 @@
 			initGoEasyMsg(){
 				let _this = this;
 				return new Promise((resolve)=> {
-					this.$goEasy.subscribe({
+					$goEasy = new GoEasy({
+						host:'hangzhou.goeasy.io', //应用所在的区域地址: 【hangzhou.goeasy.io |singapore.goeasy.io】
+						appkey: "BS-63a91f09bd3c42ad83b5b9250314e05a", //替换为您的应用appkey
+						onConnected: function() {
+							console.log('连接成功！')
+						},
+						onDisconnected: function() {
+							console.log('连接断开！')
+						},
+						onConnectFailed: function(error) {
+							console.log('连接失败或错误！'+JSON.stringify(error))
+						}
+					});
+					$goEasy.subscribe({
 					channel: this.caller.sourceClientId,
 						onMessage: function (message) {
 							console.log("您有新消息：channel：" + message.channel + " 内容：" + message.content);

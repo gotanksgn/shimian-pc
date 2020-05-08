@@ -8,7 +8,7 @@
 				<el-tabs v-model="activeMenu">
 					<el-tab-pane name="wait">
 						<span slot="label">待面试<el-badge :value="waitCount"></el-badge></span>
-						<el-table :data="waitTableData" class="video-table-list" stripe height="70vh">
+						<el-table :data="waitTableData" class="video-table-list" stripe height="60vh">
 							<el-table-column width="80" class="resume-table-headimg">
 								<template slot-scope="scope">
 									<el-avatar shape="square" :size="60" :src="scope.row.info.profilePicture" @error="errorHeadImgHandler">
@@ -78,7 +78,7 @@
 					</el-tab-pane>
 					<el-tab-pane name="unevaluated">
 						<span slot="label">待评价<el-badge :value="unevaluatedCount"></el-badge></span>
-						<el-table :data="unevaluatedTableData" class="video-table-list" stripe>
+						<el-table :data="unevaluatedTableData" class="video-table-list" stripe height="60vh">
 							<el-table-column width="80" class="resume-table-headimg">
 								<template slot-scope="scope">
 									<el-avatar shape="square" :size="60" :src="scope.row.info.profilePicture" @error="errorHeadImgHandler">
@@ -126,8 +126,8 @@
 							<el-table-column min-width="200"  label="操作">
 								<template slot-scope="scope">
 									<div>
-										<el-popover placement="top" :title="'当前进度:'+scope.row.state" width="200" trigger="click">
-											<el-rate show-text texts="['极差', '1失望', '一般', '满意', '惊喜']"></el-rate>
+										<el-popover placement="top" :title="'面试评价'" width="200" trigger="click">
+											<el-rate show-text></el-rate>
 											<el-button size="small" round  slot="reference" type="primary">评价</el-button>
 										</el-popover>
 										&emsp;
@@ -150,7 +150,7 @@
 					</el-tab-pane>
 					<el-tab-pane name="finish">
 						<span slot="label">已结束<el-badge :value="doneCount"></el-badge></span>
-						<el-table :data="doneTableData" class="video-table-list" stripe>
+						<el-table :data="doneTableData" class="video-table-list" stripe height="60vh">
 							<el-table-column width="80" class="resume-table-headimg">
 								<template slot-scope="scope">
 									<el-avatar shape="square" :size="60" :src="scope.row.info.profilePicture" @error="errorHeadImgHandler">

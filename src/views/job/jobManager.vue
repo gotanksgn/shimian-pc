@@ -43,7 +43,7 @@
 												<h5>{{item.position||'未知'}}</h5>
 											</div>
 											<div class="job-item-btns">
-												<el-badge :value="getSenderCount(item.senders)" :hidden="getSenderCount(item.senders)==0" :max="99" ><el-button type="primary" plain  @click="openResumes(item)">查看简历</el-button></el-badge>
+												<el-badge :value="waitSenderCount(item.senders)" :hidden="waitSenderCount(item.senders)==0" :max="99" ><el-button type="primary" plain  @click="openResumes(item)">查看简历</el-button></el-badge>
 											</div>
 											<!-- <el-badge value="已发布" type="success"></el-badge> -->
 										</div>
@@ -54,11 +54,11 @@
 					</div>
 				</div>
 				<el-dialog :title="jobEditTitle" :visible.sync="jobEditVisible" 
-					:width="'65%'" :top="'5vh'" destroy-on-close :close-on-click-modal="false">
+					:width="'65%'" :top="'4vh'" destroy-on-close :close-on-click-modal="false">
 					<job-edit ref="jobEdit" @handleClose="closeJob"></job-edit>
 				</el-dialog>
 				<el-dialog :title="jobResumesTitle" :visible.sync="jobResumesVisible" 
-					:width="'80%'" :top="'5vh'" destroy-on-close :close-on-click-modal="false">
+					:width="'90%'" :top="'4vh'" destroy-on-close :close-on-click-modal="false">
 					<job-resumes ref="jobResumes"></job-resumes>
 				</el-dialog>
 			</div>
@@ -75,6 +75,7 @@
 	import jobEdit from '@/views/job/jobEdit.vue'
 	import jobResumes from '@/views/job/jobResumes.vue'
 	import {mapState,mapActions} from 'vuex'
+	let jobManagerInterval;
 	export default {
 		name: 'jobManager',
 		data() {
@@ -100,18 +101,29 @@
 			}
 		},
 		created(){
-			this.getHoursTip();
-			this.getStaffInfo();
-			this.getJobList();
+			jobManagerInterval = setInterval(()=>{
+				if(window.localStorage.getItem('autoload_mode')!="false"){
+					setTimeout(()=>this.init(),500);
+				}
+			},5000);
+			this.init();
+		},
+		destroyed(){
+			clearInterval(jobManagerInterval);
 		},
 		methods: {
 			...mapActions('job',['deletePosition','getHoursTip','getJobList','getJob','getStaffInfo']),
+			init:function(){
+				this.getHoursTip();
+				this.getStaffInfo();
+				this.getJobList();
+			},
 			createJob: function(){
 				this.jobEditTitle='创建职位';
 				this.jobEditVisible = true;
 			},
 			delJob: function(job){
-				this.$confirm('该职位下已投递'+this.getSenderCount(job.senders)+'个简历,您要删除该职位', '提示', {
+				this.$confirm('该职位下已投递'+this.waitSenderCount(job.senders)+'个简历,您要删除该职位', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
@@ -147,8 +159,16 @@
 			closeJob:function(){
 				this.jobEditVisible = false;
 			},
-			getSenderCount:function(senderList){
-				return senderList==undefined||senderList==null?0:senderList.length;
+			waitSenderCount:function(senderList){
+				var count = 0;
+				if(senderList){
+					senderList.forEach((item)=>{
+						if(item.state=='SENT' || item.state=='READ' ){
+							count++;
+						}
+					});
+				}
+				return count;
 			},
 			errorHeadImgHandler(){
 				return true;

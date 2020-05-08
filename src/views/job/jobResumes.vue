@@ -1,50 +1,147 @@
 <template>
 	<div class="job-resumes">
-		<el-divider content-position="left">共收到{{tableData.length}}份投递</el-divider>
-		<el-table :data="tableData" :stripe="true" class="resume-table-list" :height="500">
-			<el-table-column :min-width="80" c8lass="resume-table-headimg">
-				<template slot-scope="scope">
-					<el-avatar shape="square" :size="70" :src="scope.row.headImg" @error="errorHeadImgHandler">
-						<img src="@/assets/img/job/headimg/head_999.png"/>
-					</el-avatar>
-				</template>
-			</el-table-column>
-			<el-table-column :min-width="120">
-				<template slot-scope="scope">
-					<div class="resume-table-name resume-table-name-fullname">{{scope.row.name}}</div>
-					<div>
-						<el-tag type="danger">{{scope.row.age}}岁</el-tag>
-						<el-tag>{{scope.row.city}}</el-tag>
-					</div>
-				</template>
-			</el-table-column>	
-			<el-table-column :min-width="200" class="resume-table-edu">
-				<template slot-scope="scope">
-					<div class="resume-table-name">{{scope.row.edu}}</div>
-					<div>
-						<el-tag type="danger">{{scope.row.degree}}</el-tag>
-						<el-tag>{{scope.row.spec}}</el-tag>
-					</div>
-				</template>
-			</el-table-column>
-			<el-table-column :min-width="200" class="resume-table-target">
-				<template slot-scope="scope">
-					<div class="resume-table-name">{{scope.row.positionType}}</div>
-					<div>
-						<el-tag type="danger">{{scope.row.salary}}</el-tag>
-						<el-tag>{{scope.row.targetCity}}</el-tag>
-					</div>
-				</template>
-			</el-table-column>
-			<el-table-column :min-width="350" class="resume-table-video">
-				<template slot-scope="scope">
-					<el-button size="small" @click="playVideo(scope.row,'视频简历')" type="primary" >简历<i class="el-icon-video-camera-solid el-icon--right"></i></el-button>
-					<el-button size="small" @click="playVideo(scope.row,'视频问答')" type="primary" >问答<i class="el-icon-video-camera el-icon--right"></i></el-button>
-					<el-button size="small" @click="viewResumeInfo(scope.row)" type="primary" >查看简历</el-button>
-					<el-button size="small" @click="appointJob(scope.row)" type="danger" >约一下</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
+		<el-tabs v-model="activeTab">
+			<el-tab-pane name="wait">
+				<span slot="label">未处理<el-badge :value="waitTableData.length"></el-badge></span>
+				<el-table :data="waitTableData" :stripe="true" class="resume-table-list" :height="'70vh'">
+					<el-table-column :min-width="80" class="resume-table-headimg">
+						<template slot-scope="scope">
+							<el-avatar shape="square" :size="60" :src="scope.row.headImg" @error="errorHeadImgHandler">
+								<img src="@/assets/img/job/headimg/head_999.png"/>
+							</el-avatar>
+						</template>
+					</el-table-column>
+					<el-table-column :min-width="120">
+						<template slot-scope="scope">
+							<div class="resume-table-name resume-table-name-fullname">{{scope.row.name}}</div>
+							<div>
+								<el-tag type="danger" v-if="scope.row.age">{{scope.row.age}}岁</el-tag>
+								<el-tag v-if="scope.row.city">{{scope.row.city}}</el-tag>
+							</div>
+						</template>
+					</el-table-column>	
+					<el-table-column :min-width="200" class="resume-table-edu">
+						<template slot-scope="scope">
+							<div class="resume-table-name">{{scope.row.edu}}</div>
+							<div>
+								<el-tag type="danger" v-if="scope.row.degree">{{scope.row.degree}}</el-tag>
+								<el-tag v-if="scope.row.spec">{{scope.row.spec}}</el-tag>
+							</div>
+						</template>
+					</el-table-column>
+					<el-table-column :min-width="200" class="resume-table-target">
+						<template slot-scope="scope">
+							<div class="resume-table-name">{{scope.row.positionType}}</div>
+							<div>
+								<el-tag type="danger" v-if="scope.row.salary">{{scope.row.salary}}</el-tag>
+								<el-tag v-if="scope.row.targetCity">{{scope.row.targetCity}}</el-tag>
+							</div>
+						</template>
+					</el-table-column>
+					<el-table-column :min-width="400" class="resume-table-video">
+						<template slot-scope="scope">
+							<el-button size="mini" @click="playVideo(scope.row,'视频简历')" type="primary" round>简历<i class="el-icon-video-camera-solid el-icon--right"></i></el-button>
+							<el-button size="mini" @click="playVideo(scope.row,'视频问答')" type="primary" round>问答<i class="el-icon-video-camera el-icon--right"></i></el-button>
+							<el-button size="mini" @click="viewResumeInfo(scope.row)" type="warning" round>查看简历</el-button>
+							<el-button size="mini" @click="appointJob(scope.row)" type="danger" round>约一下</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+			</el-tab-pane>
+			<el-tab-pane name="appoint">
+				<span slot="label">已邀约<el-badge :value="appointTableData.length"></el-badge></span>
+				<el-table :data="appointTableData" :stripe="true" class="resume-table-list" :height="'70vh'">
+					<el-table-column :min-width="80" class="resume-table-headimg">
+						<template slot-scope="scope">
+							<el-avatar shape="square" :size="60" :src="scope.row.headImg" @error="errorHeadImgHandler">
+								<img src="@/assets/img/job/headimg/head_999.png"/>
+							</el-avatar>
+						</template>
+					</el-table-column>
+					<el-table-column :min-width="120">
+						<template slot-scope="scope">
+							<div class="resume-table-name resume-table-name-fullname">{{scope.row.name}}</div>
+							<div>
+								<el-tag type="danger" v-if="scope.row.age">{{scope.row.age}}岁</el-tag>
+								<el-tag v-if="scope.row.city">{{scope.row.city}}</el-tag>
+							</div>
+						</template>
+					</el-table-column>	
+					<el-table-column :min-width="200" class="resume-table-edu">
+						<template slot-scope="scope">
+							<div class="resume-table-name">{{scope.row.edu}}</div>
+							<div>
+								<el-tag type="danger" v-if="scope.row.degree">{{scope.row.degree}}</el-tag>
+								<el-tag v-if="scope.row.spec">{{scope.row.spec}}</el-tag>
+							</div>
+						</template>
+					</el-table-column>
+					<el-table-column :min-width="200" class="resume-table-target">
+						<template slot-scope="scope">
+							<div class="resume-table-name">{{scope.row.positionType}}</div>
+							<div>
+								<el-tag type="danger" v-if="scope.row.salary">{{scope.row.salary}}</el-tag>
+								<el-tag v-if="scope.row.targetCity">{{scope.row.targetCity}}</el-tag>
+							</div>
+						</template>
+					</el-table-column>
+					<el-table-column :min-width="400" class="resume-table-video">
+						<template slot-scope="scope">
+							<el-button size="mini" @click="playVideo(scope.row,'视频简历')" type="primary" round>简历<i class="el-icon-video-camera-solid el-icon--right"></i></el-button>
+							<el-button size="mini" @click="playVideo(scope.row,'视频问答')" type="primary" round>问答<i class="el-icon-video-camera el-icon--right"></i></el-button>
+							<el-button size="mini" @click="viewResumeInfo(scope.row)" type="warning" round>查看简历</el-button>
+							<el-button size="mini" @click="goVideoRoom(scope.row)" type="success" round>转面试间</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+			</el-tab-pane>
+			<el-tab-pane name="refused">
+				<span slot="label">不合适<el-badge :value="refusedTableData.length"></el-badge></span>
+				<el-table :data="refusedTableData" :stripe="true" class="resume-table-list" :height="'70vh'">
+					<el-table-column :min-width="80" class="resume-table-headimg">
+						<template slot-scope="scope">
+							<el-avatar shape="square" :size="60" :src="scope.row.headImg" @error="errorHeadImgHandler">
+								<img src="@/assets/img/job/headimg/head_999.png"/>
+							</el-avatar>
+						</template>
+					</el-table-column>
+					<el-table-column :min-width="120">
+						<template slot-scope="scope">
+							<div class="resume-table-name resume-table-name-fullname">{{scope.row.name}}</div>
+							<div>
+								<el-tag type="danger" v-if="scope.row.age">{{scope.row.age}}岁</el-tag>
+								<el-tag v-if="scope.row.city">{{scope.row.city}}</el-tag>
+							</div>
+						</template>
+					</el-table-column>	
+					<el-table-column :min-width="200" class="resume-table-edu">
+						<template slot-scope="scope">
+							<div class="resume-table-name">{{scope.row.edu}}</div>
+							<div>
+								<el-tag type="danger" v-if="scope.row.degree">{{scope.row.degree}}</el-tag>
+								<el-tag v-if="scope.row.spec">{{scope.row.spec}}</el-tag>
+							</div>
+						</template>
+					</el-table-column>
+					<el-table-column :min-width="200" class="resume-table-target">
+						<template slot-scope="scope">
+							<div class="resume-table-name">{{scope.row.positionType}}</div>
+							<div>
+								<el-tag type="danger" v-if="scope.row.salary">{{scope.row.salary}}</el-tag>
+								<el-tag v-if="scope.row.targetCity">{{scope.row.targetCity}}</el-tag>
+							</div>
+						</template>
+					</el-table-column>
+					<el-table-column :min-width="400" class="resume-table-video">
+						<template slot-scope="scope">
+							<el-button size="mini" @click="playVideo(scope.row,'视频简历')" type="primary" round>简历<i class="el-icon-video-camera-solid el-icon--right"></i></el-button>
+							<el-button size="mini" @click="playVideo(scope.row,'视频问答')" type="primary" round>问答<i class="el-icon-video-camera el-icon--right"></i></el-button>
+							<el-button size="mini" @click="viewResumeInfo(scope.row)" type="warning" round>查看简历</el-button>
+						</template>
+					</el-table-column>
+				</el-table>
+			</el-tab-pane>	
+		</el-tabs>	
 		<el-dialog :title="resumeVideoTitle" :visible.sync="resumeVideoVisible" width="50%" append-to-body destroy-on-close :close-on-click-modal="false">
 			<player-video ref="playerVideo"></player-video>
 		</el-dialog>
@@ -55,7 +152,6 @@
 			<resume-info ref="resumeInfo"></resume-info>
 		</el-dialog>
 	</div>
-		
 </template>
 
 <script>
@@ -68,6 +164,7 @@
 		name:'jobResumes', 	
 		data() {
 			return {
+				activeTab:'wait',
 				resumeVideoTitle:'视频简历',
 				resumeVideoVisible:false,
 				jobAppointTitle:'面试预约',
@@ -79,36 +176,19 @@
 		},
 		computed:{
 			...mapState('job',['currentJob']),
-			tableData:{
+			waitTableData:{
 				get(){
-					let result =[]; 
-					if(this.currentJob.senders!=undefined && this.currentJob.senders!=null){
-						this.currentJob.senders.forEach(sender=>{
-							if(sender){
-								/* for(let i=0;i<=10;i++){ */
-								result.push({
-										id:sender.id,
-										name:sender.info.fullname,
-										age:sender.info.age,
-										headImg:sender.info.profilePicture,
-										city:sender.info.city,
-										spec:sender.resume.edus[0].major,
-										edu:sender.resume.edus[0].college,
-										degree:sender.resume.edus[0].degree,
-										positionType:sender.resume.target.positionType,
-										trade:sender.resume.target.trade,
-										targetCity:sender.resume.target.city,
-										salary:sender.resume.target.salary,
-										videoid:sender.resume && sender.resume.vcrs && sender.resume.vcrs.length>0?sender.resume.vcrs[0].videoId:'',
-										questionid:sender.answerVideoId,
-										sender:sender
-									}
-								)
-								/* } */
-							}
-						});
-					}
-					return result;
+					return this.getTableData('wait');
+				}
+			},
+			appointTableData:{
+				get(){
+					return this.getTableData('appoint');
+				}
+			},
+			refusedTableData:{
+				get(){
+					return this.getTableData('refused');
 				}
 			}
 		},
@@ -162,14 +242,65 @@
 				this.$nextTick(function(){
 					this.$refs.jobAppoint.edit(item);
 				});
-				console.log("tableData=>"+JSON.stringify(this.tableData));
+				console.log("waitTableData=>"+JSON.stringify(this.waitTableData));
 			},
 			closeAppointJobDialog(){
 				this.jobAppointVisible=false;
-				this.tableData.splice(this.tableData.indexOf(this.currentData),1);
+				this.waitTableData.splice(this.waitTableData.indexOf(this.currentData),1);
+				this.appointTableData.push(this.currentData);
+			},
+			getTableData(type){
+				let list=[];
+				let senders = this.currentJob && this.currentJob.senders?this.currentJob.senders:[];
+				let sender;
+				for(let i=0;i<senders.length;i++){
+					sender = senders[i];
+					if(type && type == 'wait' && sender && (sender.state=='SENT' || sender.state=='READ')){
+						list.push(this.senderDataToResume(sender));
+					}else if(type && type == 'appoint' && sender && sender.state=='INVITED'){
+						list.push(this.senderDataToResume(sender));
+					}else if(type && type == 'refused' && sender && sender.state=='REFUSED'){
+						list.push(this.senderDataToResume(sender));
+					}
+				}
+				return list;
+			},
+			senderDataToResume(sender){
+				let data = {};
+				if(sender){
+					data.id=sender.id;
+					if(sender.info){
+						data.name=sender.info.fullname;
+						data.age=sender.info.age;
+						data.headImg=sender.info.profilePicture;
+						data.city=sender.info.city;
+					}
+					if(sender.resume){
+						if(sender.resume.edus && sender.resume.edus.length>0){
+							data.spec=sender.resume.edus[0].major;
+							data.edu=sender.resume.edus[0].college;
+							data.degree=sender.resume.edus[0].degree;
+						}
+						if(sender.resume.target){
+							data.positionType=sender.resume.target.positionType;
+							data.trade=sender.resume.target.trade;
+							data.targetCity=sender.resume.target.city;
+							data.salary=sender.resume.target.salary;
+						}
+						if(sender.resume.vcrs && sender.resume.vcrs.length>0){
+							data.videoid=sender.resume.vcrs[0].videoId;
+						}
+					}
+					data.questionid=sender.answerVideoId;
+					data.sender=sender;
+				}
+				return data;
 			},
 			errorHeadImgHandler(){
 				return true;
+			},
+			goVideoRoom(){
+				this.$router.push('/video-manager');
 			}
 		}
 	}

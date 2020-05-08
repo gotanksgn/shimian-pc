@@ -8,12 +8,12 @@
 				</el-avatar>
 			</el-col>
 			<el-col :span="9">
-				<div class="info-base-col">姓名:{{resume.info.fullname}}</div>
-				<div class="info-base-col">年龄:{{resume.info.age}}</div>
+				<div class="info-base-col">姓名:&nbsp;{{resume.info.fullname}}</div>
+				<div class="info-base-col">年龄:&nbsp;{{resume.info.age}}</div>
 			</el-col>
 			<el-col :span="9">
-				<div class="info-base-col">电话:{{resume.info.phone}}</div>
-				<div class="info-base-col">邮箱:{{resume.info.email}}</div>
+				<div class="info-base-col">电话:&nbsp;{{resume.info.phone}}</div>
+				<div class="info-base-col">邮箱:&nbsp;{{resume.info.email}}</div>
 			</el-col>	
 		</el-row>
 		<el-divider content-position="left">求职意向</el-divider>
@@ -48,16 +48,16 @@
 		</el-row>
 		<el-divider content-position="left">教育经历</el-divider>
 		<el-row type="flex" v-for="(edu) in resume.edus" :key="edu.id">
-			<el-col :span="5" :offset="1" class="info-label-col">
+			<el-col :span="6" :offset="1" class="info-label-col">
 				{{getDateStr(edu.date)}}
 			</el-col>
-			<el-col :span="5" >
+			<el-col :span="4" >
 				{{edu.degree}}
 			</el-col>
-			<el-col :span="5" >
+			<el-col :span="6" >
 				{{edu.college}}
 			</el-col>
-			<el-col :span="5" >
+			<el-col :span="6" >
 				{{edu.major}}
 			</el-col>
 		</el-row>
@@ -67,16 +67,10 @@
 				<el-col :span="5" :offset="1" class="info-label-col">
 					{{getDateStr(work.workTime)}}
 				</el-col>
-				<el-col :span="5" >
-					{{work.company}}
+				<el-col :span="18">
+					{{work.company}}&nbsp;|&nbsp;{{work.positionType}}&nbsp;|&nbsp;{{work.trade}}
 				</el-col>
-				<el-col :span="5" >
-					{{work.positionType}}
-				</el-col>
-				<el-col :span="5" >
-					{{work.trade}}
-				</el-col>
-			</el-row>
+			</el-row>	
 			<el-row type="flex">
 				<el-col :span="3" :offset="1" class="info-label-col">
 					工作职责:
@@ -92,11 +86,8 @@
 				<el-col :span="5" :offset="1" class="info-label-col">
 					{{getDateStr(proj.projTime)}}
 				</el-col>
-				<el-col :span="5" >
-					{{proj.projName}}
-				</el-col>
-				<el-col :span="5" >
-					{{proj.projRole}}
+				<el-col :span="18" >
+					{{proj.projName}}&nbsp;|&nbsp;{{proj.projRole}}
 				</el-col>
 			</el-row>
 			<el-row type="flex">

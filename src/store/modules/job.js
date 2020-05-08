@@ -42,17 +42,20 @@ const actions = {
 	getJobList({commit}){
 		enterprisePositionsApi(true,true).then(res=>{
 			if(res.code==0){
-				let resumeCount = 0;
+				let waitResumeCount = 0;
+				let waitResumeList;
+				commit('clearPositionList');
 				res.data.forEach(function(item,idx){
 					commit('pushPositionList',item);
 					if(item.senders!=undefined && item.senders!=null){
-						resumeCount=resumeCount+item.senders.length;
+						waitResumeList = item.senders.filter(sender=>{
+							return sender.state=='SENT' || sender.state=='READ';
+						});
+						waitResumeCount=waitResumeCount+waitResumeList.length;
 					}
-					console.log("item="+item.id+"，resumeCount="+resumeCount);
+					console.log("item="+item.id+"，waitResumeCount="+waitResumeCount);
 					if(idx==res.data.length-1){
-						setTimeout(()=>{
-							commit('login/setMenuCount',{id:1,count:resumeCount}, {root: true});
-						},2000);
+						commit('login/setMenuCount',{id:1,count:waitResumeCount}, {root: true});
 					}
 				});
 			}else{
@@ -102,9 +105,12 @@ const mutations = {
 		//暂时该字段缺失
 		state.currentPosition.jobProps='全职';
 	},
+	clearPositionList(state){
+		state.jobList=[];
+	},
 	pushPositionList(state,data){
 		let curObj = state.jobList.filter(e=>e.id===data.id)[0];
-		console.log("curObj="+JSON.stringify(curObj));
+		console.log("curObj="+JSON.stringify(data));
 		if(curObj){
 			Object.assign(curObj, data);
 		}else{
