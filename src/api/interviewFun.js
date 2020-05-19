@@ -19,6 +19,3 @@ export const getInvitationsUnevaluatedByStaffApi=(data)=>{return req('get','/api
 export const getInvitationsFinishByStaffApi=(data)=>{return req('get','/api/interview/invitations/by-staffid/3',data)}
 
 //获取已处理面试邀请
-
-//呼叫面试请求
-export const pushCallApi=(data)=>{return req('post','/api/interview/invitations/push-call',data)}

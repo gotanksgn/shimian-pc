@@ -3,17 +3,17 @@
 		<!-- <el-divider content-position="left">基本信息</el-divider> -->
 		<el-row type="flex" justify="space-around">
 			<el-col :span="5" >
-				<el-avatar shape="square" :size="100" :src="resume.info.profilePicture" @error="errorHeadImgHandler">
+				<el-avatar shape="square" :size="100" :src="resume.info.profilePicture" @error="true">
 					<img src="@/assets/img/job/headimg/head_999.png"/>
 				</el-avatar>
 			</el-col>
 			<el-col :span="9">
-				<div class="info-base-col">姓名:&nbsp;{{resume.info.fullname}}</div>
+				<div class="info-base-col">姓名:&nbsp;{{encrypted?encryptedFullName:resume.info.fullname}}</div>
 				<div class="info-base-col">年龄:&nbsp;{{resume.info.age}}</div>
 			</el-col>
 			<el-col :span="9">
-				<div class="info-base-col">电话:&nbsp;{{resume.info.phone}}</div>
-				<div class="info-base-col">邮箱:&nbsp;{{resume.info.email}}</div>
+				<div class="info-base-col">电话:&nbsp;{{encrypted?encryptedPhone:resume.info.phone}}</div>
+				<div class="info-base-col">邮箱:&nbsp;{{encrypted?encryptedEmail:resume.info.email}}</div>
 			</el-col>	
 		</el-row>
 		<el-divider content-position="left">求职意向</el-divider>
@@ -119,6 +119,23 @@
 				resume:{}
 			}
 		},
+		computed:{
+			encryptedFullName(){
+				return this.$util.encrypted.encryptedUserName(this.resume.info.fullname);
+			},
+			encryptedPhone(){
+				return this.$util.encrypted.encryptedPhone(this.resume.info.phone);
+			},
+			encryptedEmail(){
+				return this.$util.encrypted.encryptedEmail(this.resume.info.email);
+			}
+		},
+		props: {
+			encrypted:{
+				type: Boolean,
+				default: false
+			}
+		},
 		methods: {
 			view(item){
 				console.log('item=>'+JSON.stringify(item));
@@ -126,9 +143,6 @@
 			},
 			getDateStr(dateArray){
 				return dateArray[0]+"~"+dateArray[1];
-			},
-			errorHeadImgHandler(){
-				return true;
 			}
 		}
 		

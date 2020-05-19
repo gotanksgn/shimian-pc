@@ -40,10 +40,11 @@ Vue.config.productionTip = false
 
 // 路由拦截器
 router.beforeEach((to, from, next) => {
+	console.log("to="+JSON.stringify(to));
     if (to.matched.length != 0) {
 		//console.log('to.meta.requireAuth='+to.meta.requireAuth);
         if (to.meta.requireAuth) { // 判断该路由是否需要登录权限
-			console.log("userInfo=>"+JSON.stringify(util.lstore.get("user")));
+			//console.log("userInfo=>"+JSON.stringify(util.lstore.get("user")));
 			if (util.common.isNotEmpty(util.lstore.get("user"))) { // 通过vuex state获取当前的user是否存在
                 next();
             } else {
@@ -53,19 +54,7 @@ router.beforeEach((to, from, next) => {
                 })
             }
         } else {
-			//console.log("user="+util.common.isNotEmpty(util.sstore.get("user")));
-            if (util.common.isNotEmpty(util.lstore.get("user"))) { // 判断是否登录
-                console.log("to.path="+to.path);
-				if (to.path != "/" && to.path != "/login") { //判断是否要跳到登录界面
-                    next();
-                } else {
-                    next({
-                        path: '/job-manager'
-                    })
-                }
-            } else {
-                next();
-            }
+			next();
         }
     } else {
         next({

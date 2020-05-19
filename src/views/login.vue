@@ -5,17 +5,27 @@
 				<el-col :span="8" :offset="14">
 					<el-form label-position="left" :model="loginForm" :rules="rules" ref="loginForm"  class="login-container">
 						<h3 class="login-container-title">登陆即可开启视频面试</h3>
-						<el-form-item prop="phone">
-							<el-input type="text" v-model="loginForm.phone" auto-complete="off" placeholder="请输入手机号"></el-input>
-						</el-form-item>
-						<el-form-item prop="sendcode" class="login-container-code">
-							<el-input v-model="loginForm.sendcode" placeholder="请输入验证码" @keyup.enter.native="login()">
-								<el-button slot="append" @click="sendcode" :disabled="disabled">{{btntxt}}</el-button>
-							</el-input>
-						</el-form-item>
-						<el-form-item class="login-container-submit">
-							<el-button type="primary"  @click="login()" :loading="loginLoading">登录</el-button>
-						</el-form-item>
+						<template v-if="loginCache && loginCache==true">
+							<el-form-item class="login-container-welcome">
+								欢迎您回来,<span class="login-container-welcome-user">{{user.fullname}}</span>
+							</el-form-item>
+							<el-form-item class="login-container-submit">
+								<el-button type="primary"  @click="enterHomePage()" :loading="loginLoading">进入视面</el-button>
+							</el-form-item>
+						</template>	
+						<template v-else>
+							<el-form-item prop="phone">
+								<el-input type="text" v-model="loginForm.phone" auto-complete="off" placeholder="请输入手机号"></el-input>
+							</el-form-item>
+							<el-form-item prop="sendcode" class="login-container-code">
+								<el-input v-model="loginForm.sendcode" placeholder="请输入验证码" @keyup.enter.native="smsCodeLogin()">
+									<el-button slot="append" @click="sendcode" :disabled="disabled">{{btntxt}}</el-button>
+								</el-input>
+							</el-form-item>
+							<el-form-item class="login-container-submit">
+								<el-button type="primary"  @click="smsCodeLogin()" :loading="loginLoading">登录</el-button>
+							</el-form-item>
+						</template>
 						<el-form-item class="login-container-ysxy">
 							<el-link type="info">《视面用户协议》</el-link>
 							<el-link type="info">《隐私协议》</el-link>
@@ -60,11 +70,12 @@
 						{ required: true, message: '请输入验证码', trigger: 'blur' }
 					]
 				},
-				loginLoading:false
+				loginLoading:false,
+				loginCache:false
 			}
 		},
 		computed:{
-			...mapState('login', ['user','menuList'])
+			...mapState('login',['user'])
 		},
 		methods: {
 			...mapActions('login',['saveLoginInfo']),
@@ -89,13 +100,19 @@
 					}
 				});
 			},
-			login(){
+			smsCodeLogin(){
 				this.$refs.loginForm.validate((valid)=>{
 					if(valid){
 						this.loginLoading=true;
 						tokenApi(this.loginForm.phone,this.loginForm.sendcode).then(res=>{
-							this.loginTo(res);
+							this.tokenCheck(res.data).then(()=>{
+								this.enterHomePage();
+							}).catch(error=>{
+								this.loginLoading=false;
+								this.$message.error(error);
+							});
 						}).catch(()=>{
+							this.loginLoading=false;
 							this.$message.error("登陆失败");
 						});
 					}else{
@@ -103,37 +120,50 @@
 					}
 				});
 			},
-			loginTo(res){
-				if(res.code==0){
-					//token赋值
-					this.$util.lstore.set('token',res.data);
-					userinfoApi().then(res=>{//获取用户
+			tokenLogin(){
+				let token=this.$util.lstore.get('token');
+				if(token){
+					this.tokenCheck(token).then(()=>{
+						this.loginCache = true;
+					}).catch(error=>{
+						//异常清理了token重新验证码登陆
+						console.log('[login]:'+error);
+						this.clearLoginCache();
+					});
+				}else{
+					//token无效处理方法
+					this.clearLoginCache();
+				}
+			},
+			tokenCheck(token){
+				return new Promise((resolve, reject) => {
+					this.$util.lstore.set('token',token);
+					userinfoApi().then(res=>{
 						if(res.code==0){
 							let user=res.data;
 							if(user.authFlag==true){
 								this.saveLoginInfo(res.data);
-								setTimeout(()=>{
-									this.$router.push('/job-manager');
-								},1000);
+								resolve(res.data);
 							}else{
-								setTimeout(()=>{
-									this.$message.error("您的账号还未实名认证,请前往APP认证后再登陆");
-									this.loginLoading=false;
-								},1000);
+								reject("您的账号还未实名认证,请前往APP认证后再登陆");
 							}
 						}else{
-							this.$message.error(res.msg);
-							setTimeout(()=>{
-								this.loginLoading=false;
-							},1000);
+							reject(res.msg);
 						}
+					}).catch(error=>{
+						reject(error);
 					});
-				}else{
-					this.$message.error(res.msg);
-					setTimeout(()=>{
-						this.loginLoading=false;
-					},1000);
-				}
+				});
+			},
+			enterHomePage(){
+				setTimeout(()=>{
+					this.$router.push(decodeURIComponent(this.$route.query.redirect || '/job-manager'));
+				},1000);
+			},
+			clearLoginCache(){
+				this.$util.lstore.del('token');
+				this.$util.lstore.del('user');
+				this.loginCache = false;
 			},
 			//60S倒计时
 			timer() {
@@ -161,9 +191,7 @@
 					duration:0
 				});
 			}
-/* 			if(this.$util.common.isNotEmpty(this.$util.lstore.get("user"))){
-				this.
-			} */
+			this.tokenLogin();
 		}
 	}
 
@@ -173,7 +201,8 @@
 	.login{
 		height: 120vh;
 		background-color: black !important;
-		background: url(~@/assets/img/login/login_bg1.png) #333 no-repeat top center / 90vw auto;
+		//background: url(~@/assets/img/login/login_bg1.png) #333 no-repeat top center / 90vw auto;
+		background: url(~@/assets/img/login/login_bg2.png) #333 no-repeat top center / 90vw auto;
 		.login-wrap {
 			box-sizing: border-box;
 			.login-container {
@@ -185,12 +214,19 @@
 				border: 0.1em solid #eaeaea;
 				text-align: left;
 				box-shadow: 0 0 2em 0.1em rgba(0, 0, 0, 0.1);
+				color: #606266;
 				.login-container-title {
 					margin: 2rem 0rem;
 					text-align: left;
-					color: #505458;
+					color: #303133;
 				}
-				.login-container-code{
+				.login-container-welcome{
+					.el-form-item__content{
+						font-size: 1rem;
+						.login-container-welcome-user{
+							color: #303133;
+						}
+					}
 
 				}
 				.login-container-submit{

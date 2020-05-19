@@ -10,7 +10,7 @@
 						<dl class="interview-info-wrap">
 							<dt>
 								<!-- <img src="~@/assets/img/job/headimg/head_0.png" alt="avatar"> -->
-								<el-avatar shape="square" :size="80" :src="staff.profilePicture" @error="errorHeadImgHandler">
+								<el-avatar shape="square" :size="80" :src="staff.profilePicture" @error="true">
 									<img src="@/assets/img/job/headimg/head_0.png"/>
 								</el-avatar>
 							</dt>
@@ -169,9 +169,6 @@
 					});
 				}
 				return count;
-			},
-			errorHeadImgHandler(){
-				return true;
 			}
 		}
 	}

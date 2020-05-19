@@ -6,7 +6,7 @@
 				<el-table :data="waitTableData" :stripe="true" class="resume-table-list" :height="'70vh'">
 					<el-table-column :min-width="80" class="resume-table-headimg">
 						<template slot-scope="scope">
-							<el-avatar shape="square" :size="60" :src="scope.row.headImg" @error="errorHeadImgHandler">
+							<el-avatar shape="square" :size="60" :src="scope.row.headImg" @error="true">
 								<img src="@/assets/img/job/headimg/head_999.png"/>
 							</el-avatar>
 						</template>
@@ -53,7 +53,7 @@
 				<el-table :data="appointTableData" :stripe="true" class="resume-table-list" :height="'70vh'">
 					<el-table-column :min-width="80" class="resume-table-headimg">
 						<template slot-scope="scope">
-							<el-avatar shape="square" :size="60" :src="scope.row.headImg" @error="errorHeadImgHandler">
+							<el-avatar shape="square" :size="60" :src="scope.row.headImg" @error="true">
 								<img src="@/assets/img/job/headimg/head_999.png"/>
 							</el-avatar>
 						</template>
@@ -100,7 +100,7 @@
 				<el-table :data="refusedTableData" :stripe="true" class="resume-table-list" :height="'70vh'">
 					<el-table-column :min-width="80" class="resume-table-headimg">
 						<template slot-scope="scope">
-							<el-avatar shape="square" :size="60" :src="scope.row.headImg" @error="errorHeadImgHandler">
+							<el-avatar shape="square" :size="60" :src="scope.row.headImg" @error="true">
 								<img src="@/assets/img/job/headimg/head_999.png"/>
 							</el-avatar>
 						</template>
@@ -295,9 +295,6 @@
 					data.sender=sender;
 				}
 				return data;
-			},
-			errorHeadImgHandler(){
-				return true;
 			},
 			goVideoRoom(){
 				this.$router.push('/video-manager');

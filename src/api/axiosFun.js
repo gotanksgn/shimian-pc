@@ -48,7 +48,7 @@ const req = (method, url, params) => {
 			return qs.stringify(data);
         }]
     }).then(res =>{
-		//console.log("url="+url+",res="+JSON.stringify(res.data));
+		console.log("url="+url+",res="+JSON.stringify(res.data));
 		return res.data;
 	}).catch(error=>{
 		console.log("url="+url+",error=>"+JSON.stringify(error));
