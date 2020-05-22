@@ -244,38 +244,35 @@
 					this.joinChannel(authInfo);
 				}).catch(error=>{
 					//goeasy初始化失败
-					console.log("goeasy_error=>"+JSON.stringify(error));
+					console.log("[RTC] 异常:"+JSON.stringify(error));
 				})).catch(error=>{
 					//webrtc初始化失败
-					console.log("webrtc_error=>"+JSON.stringify(error));
+					console.log("[RTC] 异常:"+JSON.stringify(error));
 				})
 			},
 			initGoEasyMsg(){
 				let _this = this;
 				return new Promise((resolve)=> {
 					authOtpApi().then(res=>{
-						console.log("goeasy-auto:"+JSON.stringify(res));
-						console.log("goeasy-token:"+res.data);
 						$goEasy = new GoEasy({
 							host:'hangzhou.goeasy.io',
 							appkey: 'PC-6480848211034de79bfbe5df7919f59e', 
 							otp:res.data,
 							onConnected: function() {
-								console.log('[GOEASY]:连接成功')
+								console.log('[GOEASY] 连接成功')
 							},
 							onDisconnected: function() {
-								console.log('[GOEASY]:连接断开')
+								console.log('[GOEASY] 连接断开')
 							},
 							onConnectFailed: function(error) {
-								console.log('[GOEASY]:连接失败或错误,'+JSON.stringify(error))
+								console.log('[GOEASY] 连接失败或错误,'+JSON.stringify(error))
 							}
 						});
 						$goEasy.subscribe({
 							channel: this.caller.sourceChannel,
 								onMessage: function (message) {
-									console.log("[GOEASY]:您有新消息：channel：" + message.channel + " 内容：" + message.content);
+									console.log("[GOEASY] 您有新消息：channel：" + message.channel + " 内容：" + message.content);
 									let obj = JSON.parse(message.content);
-									console.log(obj);
 									if(_this.videoStatus=='waiting' && obj.action=='JOIN'){//加入房间
 										_this.videoStatus='connecting';
 										_this.callingFlag=false;
@@ -296,10 +293,10 @@
 									}
 								},
 								onSuccess: function () {
-									console.log("[GOEASY]:订阅成功");
+									console.log("[GOEASY] 订阅成功");
 								},
 								onFailed: function (error) {
-									console.log("[GOEASY]:订阅失败, 错误编码：" + error.code + " 错误信息：" + error.content)
+									console.log("[GOEASY] 订阅失败, 错误编码：" + error.code + " 错误信息：" + error.content)
 								}
 							}
 						);
@@ -316,20 +313,20 @@
 							this.rtcAuth(this.caller.roomId,this.caller.sourceId).then(authInfo=>{
 								//有用户加入房间时
 								aliWebrtc.on("onJoin", (publisher) => {
-									console.log("[RTC]:用户加入房间:"+publisher.displayName);
+									console.log("[RTC] 用户加入房间:"+publisher.displayName);
 								});
 								//用户离开房间
 								aliWebrtc.on("onLeave", (publisher) => {
-									console.log("[RTC]:用户离开房间:"+publisher.displayName);
+									console.log("[RTC] 用户离开房间:"+publisher.displayName);
 								});
 								//用户推流
 								aliWebrtc.on("onPublisher", (publisher) => {
-									console.log("[RTC]:用户开启视频:"+publisher.displayName);
+									console.log("[RTC] 用户开启视频:"+publisher.displayName);
 									this.subScribeUser(publisher.displayName);
 								});
 								//用户关闭推流
 								aliWebrtc.on("onUnPublisher", (publisher) => {
-									console.log("[RTC]:用户关闭视频:"+publisher.displayName);
+									console.log("[RTC] 用户关闭视频:"+publisher.displayName);
 								});
 								//用户被退出
 								aliWebrtc.on("onBye",(message) =>{
@@ -344,7 +341,7 @@
 										default: msg = "onBye";
 									}
 									this.$message.error(msg);
-									console.log("[RTC]:被退出:"+msg);
+									console.log("[RTC] 被退出:"+msg);
 								});
 								//用户异常
 								aliWebrtc.on("onError", (error) => {
@@ -362,7 +359,7 @@
 										msg = "订阅异常"
 									}
 									this.$message.error(msg);
-									console.log("[RTC]:用户异常:"+msg);
+									console.log("[RTC] 用户异常:"+msg);
 								});
 								resolve(authInfo);
 							}).catch(err=>reject(err));
@@ -385,14 +382,14 @@
 								if(videoSub.subscribed==false){
 									this.subScribeUser(user.userId);
 								}else{
-									console.log("[RTC]:已订阅,无需订阅");
+									console.log("[RTC] 已订阅,无需订阅");
 								}
 							}else{
-								console.log("[RTC]:用户未开视频");
+								console.log("[RTC] 用户未开视频");
 							}
 						}
 					}else{
-						console.log("[RTC]:当前无用户在线");
+						console.log("[RTC] 当前无用户在线");
 					}
 				},0),5000);				
 			},			
@@ -446,7 +443,7 @@
 				return new Promise((resolve, reject)=> {
 					rtcAuthApi({"roomid":roomid,"userid":userid}).then(response=>{
 						response.data.channel = roomid;
-						console.log("[RTC]:获取鉴权成功");
+						console.log("[RTC] 获取鉴权成功");
 						resolve(response.data);
 					}).catch(function (error) {
 						reject(error);
@@ -457,7 +454,7 @@
 				return new Promise((resolve)=> {
 					aliWebrtc.joinChannel(authInfo, this.caller.sourceId).then(() => {
 						this.publishGoEasy('JOIN').then(()=>{
-							console.log("[RTC]:加入房间成功");
+							console.log("[RTC] 加入房间成功");
 							resolve();
 						});
 					});
@@ -467,11 +464,11 @@
 				return new Promise((resolve, reject)=> {
 					aliWebrtc.leaveChannel().then(()=>{
 						this.publishGoEasy('LEAVE').then(()=>{
-							console.log("[RTC]:离开房间成功");
+							console.log("[RTC] 离开房间成功");
 							resolve();
 						});
 					}).catch(error=>{
-						console.log("[RTC]:离开房间失败");
+						console.log("[RTC] 离开房间失败");
 						reject(error);
 					});
 				});
@@ -483,10 +480,10 @@
 					aliWebrtc.configLocalAudioPublish = audioSwitch;
 					aliWebrtc.configLocalCameraPublish = CameraSwitch;
 					aliWebrtc.publish().then(() => {
-						console.log("[RTC]:推流成功");
+						console.log("[RTC] 推流成功");
 						resolve();
 					}, (error) => {
-						console.log('[RTC]:推流失败');
+						console.log('[RTC] 推流失败');
 						reject(error);
 					});
 				});
@@ -500,10 +497,10 @@
 					this.videoStatus='done';
 					clearInterval(loopSubScribeUserInterval);
 					clearTimeout(callingTimeout);
-					console.log('[RTC]:订阅成功');
+					console.log('[RTC] 订阅成功');
 				}).catch((error) => {
 					clearTimeout(callingTimeout);
-					console.log('[RTC]:订阅失败'+error.message);
+					console.log('[RTC] 订阅失败'+error.message);
 				});
 				aliWebrtc.setDisplayRemoteVideo(remoteUserName, this.$refs.remoteVideo, 1);				
 			},
@@ -513,7 +510,7 @@
 						resolve();
 					}).catch(error=>{
 						reject(error);
-						console.log('[RTC]:退订失败'+error.message);
+						console.log('[RTC] 退订失败'+error.message);
 					})
 				});
 			},
@@ -521,17 +518,17 @@
 				aliWebrtc.startPreview(this.$refs.localVideo).then(() => {
 					this.videoStatus='waiting';
 					this.videoOpen=true;
-					console.log("[LOCAL]:已打开本地视频");
+					console.log("[LOCAL] 已打开本地视频");
 				}).catch((error) => { 
-					console.log("[LOCAL]:打开本地视频失败,"+ error.message);
+					console.log("[LOCAL] 打开本地视频失败,"+ error.message);
 				}); 
 			},
 			closeLocalVideo(){
 				aliWebrtc.stopPreview(this.$refs.localVideo).then(() => {
-					console.log("[LOCAL]:已关闭本地视频");
+					console.log("[LOCAL] 已关闭本地视频");
 					this.videoOpen=false;
 				}).catch((error) => { 
-					console.log("[LOCAL]:关闭本地视频失败"+ error.message);
+					console.log("[LOCAL] 关闭本地视频失败"+ error.message);
 				});
 			},
 			callUser(){
@@ -580,7 +577,7 @@
 						},2000);
 					})
 				}).catch(error=>{
-					console.log(JSON.stringify(error))
+					console.log("[GOEASY] 异常:"+JSON.stringify(error))
 				});
 			},
 			publishGoEasy(action){

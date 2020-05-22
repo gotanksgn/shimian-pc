@@ -27,8 +27,8 @@
 										<el-tag type="danger" v-if="resume.info.workStatus" size="mini">{{resume.info.workStatus}}</el-tag>
 										<el-tag type="success" v-if="resume.info.city" size="mini">当前在{{resume.info.city}}</el-tag>
 										<el-tag type="primary" v-if="resume.info.workLength" size="mini">{{resume.info.workLength}}年经验</el-tag>
-										<el-tag type="warning" v-if="resume.target.positionType" size="mini">{{resume.target.positionType}}</el-tag>
-										<el-tag type="danger" v-if="resume.target.salary" size="mini">{{resume.target.salary}}</el-tag>
+										<el-tag type="warning" v-if="resume.target && resume.target.positionType" size="mini">{{resume.target.positionType}}</el-tag>
+										<el-tag type="danger" v-if="resume.target && resume.target.salary" size="mini">{{resume.target.salary}}</el-tag>
 										<el-tag type="success" v-if="resume.edus && resume.edus.length>0 && resume.edus[0].college" size="mini">{{resume.edus[0].college}}</el-tag>
 										<el-tag type="warning" v-if="resume.edus && resume.edus.length>0 && resume.edus[0].degree" size="mini">{{resume.edus[0].degree}}</el-tag>
 									</el-col>

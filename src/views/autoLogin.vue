@@ -2,15 +2,15 @@
 	<div class="el-main">
 		<el-row type="flex">
 			<el-col :span="6" :offset="1">
-				<el-switch v-model="debug" active-text="DEBUG模式" inactive-text="非DEBUG模式" @change="debugFun(debug)"></el-switch>
+				<el-switch v-model="debug" active-text="DEBUG模式" inactive-text="非DEBUG模式"></el-switch>
 			</el-col>
 			<el-col :span="6" :offset="1">
-				<el-switch v-model="autoload" active-text="自动刷新" inactive-text="关闭自动刷新" @change="autoloadFun(autoload)"></el-switch>
+				<el-switch v-model="autoload" active-text="自动刷新" inactive-text="关闭自动刷新"></el-switch>
 			</el-col>
 		</el-row>
 		<el-row type="flex">
 			<el-col :span="2" :offset="1">token:</el-col>
-			<el-col :span="20"><el-input v-model="selfToken"></el-input></el-col>
+			<el-col :span="20"><el-input v-model="token"></el-input></el-col>
 		</el-row>
 		<el-row type="flex">
 			<el-col :span="2" :offset="1">登陆状态</el-col>
@@ -33,25 +33,55 @@
 			return{
 				loginstatus:'未登陆',
 				loginuser:'',
-				selfToken:'',
-				loginLoading:false,
-				autoload:window.localStorage.getItem("autoload_mode")!=null?window.localStorage.getItem("autoload_mode"):false,
-				debug:window.localStorage.getItem("debug_mode")!=null?window.localStorage.getItem("debug_mode"):false
+				debugToken:'',
+				loginLoading:false
 			} 
 		},
+		computed:{
+			debug:{
+				get(){
+					return this.$store.state.config.debug.isOpen;
+				},
+				set(v){
+					if(v===true){
+						this.$store.commit("config/openDebug");
+					}else{
+						this.$store.commit("config/closeDebug");
+					}
+				}
+			},
+			token:{
+				get(){
+					return this.$store.state.config.debug.token;
+				},
+				set(v){
+					this.$store.commit("config/setToken",v);
+				}
+			},
+			autoload:{
+				get(){
+					return this.$store.state.config.autoLoad;
+				},
+				set(v){
+					if(v===true){
+						this.$store.commit("config/openAutoLoad");
+					}else{
+						this.$store.commit("config/closeAutoLoad");
+					}
+				}
+			}
+		},
 		created(){
-			this.selfToken=this.$util.cookie.get("debug_token");
+			this.debugToken=this.$util.cookie.get("debugToken");
+			console.log('debug='+this.debug);
 		},
 		methods:{
 			autologin:function(){
-				if(this.selfToken!=null && this.selfToken!=''){
+				if(this.$util.common.isNotEmpty(this.token)){
 					this.loginLoading=true;
-					this.$util.lstore.set("token",this.selfToken);
+					this.$util.lstore.set("token",this.token);
 					userinfoApi().then(res=>{//获取用户
 						if(res.code==0){
-							//赋值debug_token
-							this.$util.cookie.set("debug_token",this.selfToken);
-							//跳转
 							let user=res.data;
 							if(user.authFlag==true){
 								this.$store.dispatch('login/saveLoginInfo',user);
@@ -68,14 +98,6 @@
 						}
 					});
 				}
-			},
-			debugFun(mode){
-				this.debug=mode;
-				window.localStorage.setItem("debug_mode",mode);
-			},
-			autoloadFun(mode){
-				this.autoload=mode;
-				window.localStorage.setItem("autoload_mode",mode);
 			}
 		}
 	}

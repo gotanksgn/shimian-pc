@@ -9,8 +9,7 @@ export default {
 	name: 'App',
 	metaInfo: {
 		// 如果子component中没有定义 metaInfo.title ，会默认使用这个title
-		title: '视频面试就上视面 面试更快捷',
-		//title:'开发者平台',
+		title:'视频面试就上视面 面试更快捷',
 		meta:[
 			{charset: 'utf-8' },
 			{httpEquiv:'X-UA-Compatible',content:'X-UA-Compatible" content="IE=Edge，chrome=1'},

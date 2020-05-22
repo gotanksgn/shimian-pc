@@ -201,8 +201,8 @@
 	.login{
 		height: 120vh;
 		background-color: black !important;
-		//background: url(~@/assets/img/login/login_bg1.png) #333 no-repeat top center / 90vw auto;
-		background: url(~@/assets/img/login/login_bg2.png) #333 no-repeat top center / 90vw auto;
+		background: url(~@/assets/img/login/login_bg1.png) #333 no-repeat top center / 90vw auto;
+		//background: url(~@/assets/img/login/login_bg2.png) #333 no-repeat top center / 90vw auto;
 		.login-wrap {
 			box-sizing: border-box;
 			.login-container {

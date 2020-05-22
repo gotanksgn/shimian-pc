@@ -17,35 +17,37 @@
 			</el-col>	
 		</el-row>
 		<el-divider content-position="left">求职意向</el-divider>
-		<el-row type="flex">
-			<el-col :span="3"  :offset="1">
-				期望薪资:
-			</el-col>
-			<el-col :span="8">
-				{{resume.target.salary}}
-			</el-col>
-			<el-col :span="2"  :offset="1">
-				地点:
-			</el-col>
-			<el-col :span="4">
-				{{resume.target.city}}
-				
-			</el-col>
-		</el-row>	
-		<el-row type="flex">
-			<el-col :span="3" :offset="1">
-				行业:
-			</el-col>
-			<el-col :span="8">
-				{{resume.target.trade}}
-			</el-col>
-			<el-col :span="2" :offset="1">
-				职位:
-			</el-col>
-			<el-col :span="4">
-				{{resume.target.positionType}}
-			</el-col>
-		</el-row>
+		<template v-if="resume.target">
+			<el-row type="flex">
+				<el-col :span="3"  :offset="1">
+					期望薪资:
+				</el-col>
+				<el-col :span="8">
+					{{resume.target.salary}}
+				</el-col>
+				<el-col :span="2"  :offset="1">
+					地点:
+				</el-col>
+				<el-col :span="4">
+					{{resume.target.city}}
+					
+				</el-col>
+			</el-row>	
+			<el-row type="flex">
+				<el-col :span="3" :offset="1">
+					行业:
+				</el-col>
+				<el-col :span="8">
+					{{resume.target.trade}}
+				</el-col>
+				<el-col :span="2" :offset="1">
+					职位:
+				</el-col>
+				<el-col :span="4">
+					{{resume.target.positionType}}
+				</el-col>
+			</el-row>
+		</template>
 		<el-divider content-position="left">教育经历</el-divider>
 		<el-row type="flex" v-for="(edu) in resume.edus" :key="edu.id">
 			<el-col :span="6" :offset="1" class="info-label-col">

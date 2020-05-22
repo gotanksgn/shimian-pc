@@ -22,6 +22,19 @@ let isEmptyObject = function (obj) {
 }
 
 /**
+ * 判断是否为true
+ */
+let isTrue = function(value, {zero = true, infinity = false, emptyString = false, emptyArray = false, emptyObject = false} = {}) {
+	if(value === 0) return !!zero
+	if(value === '') return !!emptyString
+	if(value === Infinity) return !!infinity
+	if(Array.isArray(value) && value.length === 0) return !!emptyArray
+	if(value === null) return false
+	if(typeof value === 'object' && Object.keys(value).length === 0) return !!emptyObject
+	return !!value;
+}
+
+/**
  * 判断是否是数字
  * @param {object} n 
  * @return {boolean}
@@ -242,6 +255,7 @@ export default {
     isNotEmpty,
     isEmptyObject,
     isEmptyObject,
+	isTrue,
     isArray,
     clone,
     getOS,
