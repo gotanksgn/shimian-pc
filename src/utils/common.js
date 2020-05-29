@@ -79,7 +79,7 @@ let clone = function (obj) {
     if (obj instanceof Object) {
         copy = {};
         for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+            if (Object.prototype.hasOwnProperty.call(obj, attr)) copy[attr] = clone(obj[attr]);
         }
         return copy;
     }
@@ -100,72 +100,6 @@ const getOS = function () {
     if (/linux/i.test(u)) return 'linux'
 }
 
-/**
- * 获取浏览器类型和版本
- * @param {boolean} versions 
- * @return {string}
- */
-const getExplore = function (versions) {
-    var sys = {},
-        ua = navigator.userAgent.toLowerCase(),
-        s;
-    (s = ua.match(/rv:([\d.]+)\) like gecko/)) ? sys.ie = s[1] :
-        (s = ua.match(/msie ([\d\.]+)/)) ? sys.ie = s[1] :
-            (s = ua.match(/edge\/([\d\.]+)/)) ? sys.edge = s[1] :
-                (s = ua.match(/firefox\/([\d\.]+)/)) ? sys.firefox = s[1] :
-                    (s = ua.match(/(?:opera|opr).([\d\.]+)/)) ? sys.opera = s[1] :
-                        (s = ua.match(/chrome\/([\d\.]+)/)) ? sys.chrome = s[1] :
-                            (s = ua.match(/version\/([\d\.]+).*safari/)) ? sys.safari = s[1] : 0;
-    // 根据关系进行判断
-    if (sys.ie) return versions ? ('IE: ' + sys.ie) : 'IE'
-    if (sys.edge) return versions ? ('EDGE: ' + sys.edge) : 'EDGE'
-    if (sys.firefox) return versions ? ('Firefox: ' + sys.firefox) : 'Firefox'
-    if (sys.chrome) return versions ? ('Chrome: ' + sys.chrome) : 'Chrome'
-    if (sys.opera) return versions ? ('Opera: ' + sys.opera) : 'Opera'
-    if (sys.safari) return versions ? ('Safari: ' + sys.safari) : 'Safari'
-    return 'Unkonwn'
-}
-
-/**
- * 
- * url参数转对象
- * @param  {String} url url
- * @return {object}
- */
-let urlParamsToObj = function (url) {
-    url = url == null ? window.location.href : url
-    var search = url.substring(url.lastIndexOf('?') + 1)
-    if (!search) {
-        return {}
-    }
-    if (!search.includes('=')) {
-        return {}
-    }
-    return JSON.parse('{"' + decodeURIComponent(search).
-        replace(/"/g, '\\"').
-        replace(/&/g, '","').
-        replace(/=/g, '":"') + '"}');
-}
-
-/**
- *  对象参数添加到url上
- * @param {string} url url
- * @param {object} params 参数
- * @return {string} url
- */
-let objToUrlParams = function (url, params) {
-    if (url.includes('?')) {
-        for (var p in params) {
-            url += `&${p}=${params[p]}`
-        }
-    } else {
-        url += '?_p';
-        for (var p in params) {
-            url += `&${p}=${params[p]}`
-        }
-    }
-    return url
-}
 
 /**
  * 获取url参数
@@ -191,6 +125,7 @@ let getParame = function (name) {
  */
 let randomWord = (flag = false, min, max) => {
     let str = "",
+		pos,
         range = min,
         arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -210,7 +145,6 @@ let randomWord = (flag = false, min, max) => {
 
 /**
  * 生成uuid
- * @return {string}
  */
 let UUID = function () {
     var s = [];
@@ -220,11 +154,8 @@ let UUID = function () {
     }
     s[14] = '4';
     s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
-
     s[8] = s[13] = s[18] = s[23] = '-';
-
-    var uuid = s.join('');
-    return uuid;
+    return s.join('');
 }
 
 /**
@@ -254,14 +185,13 @@ let ImgToBase64 = (url, callback, outputFormat) => {
 export default {
     isNotEmpty,
     isEmptyObject,
-    isEmptyObject,
+	isNumber,
 	isTrue,
     isArray,
     clone,
     getOS,
-    getExplore,
-    urlParamsToObj,
-    objToUrlParams,
     getParame,
-    randomWord
+    randomWord,
+	UUID,
+	ImgToBase64
 }

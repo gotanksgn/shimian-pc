@@ -35,15 +35,19 @@
 										<div class="job-item-wrap">
 										<div class="job-item-box">
 											<img class="job-item-bg" src="~@/assets/img/job/item-wrap-background.png"/>
-											<div class="operaable-btn-wrap">
-												<a href="javascript:;" class="edit-room" @click="editJob(item)"><span>编辑</span></a>
-												<a href="javascript:;" class="del-room" @click="delJob(item)"><span>删除</span></a>
+											<div class="operaable-btn-wrap" v-if="item.activeStatus==1">
+												<a href="javascript:;" class="edit-job" @click="editJob(item)"><span>编辑</span></a>
+												<a href="javascript:;" class="close-job" @click="closeJob(item)"><span>停用</span></a>
 											</div>
+											<div class="operaable-btn-wrap" v-else>
+												<a href="javascript:;" class="open-job" @click="openJob(item)" disable><span>启用</span></a>
+											</div>	
 											<div class="job-info-wrap">
 												<h5>{{item.position||'未知'}}</h5>
 											</div>
 											<div class="job-item-btns">
-												<el-badge :value="waitSenderCount(item.senders)" :hidden="waitSenderCount(item.senders)==0" :max="99" ><el-button type="primary" plain  @click="openResumes(item)">查看简历</el-button></el-badge>
+												<el-badge v-if="item.activeStatus==1" :value="waitSenderCount(item.senders)" :hidden="waitSenderCount(item.senders)==0" :max="99" ><el-button type="primary" plain  @click="openResumes(item)">查看简历</el-button></el-badge>
+												<el-button v-else type="danger" plain >已停用</el-button>
 											</div>
 											<!-- <el-badge value="已发布" type="success"></el-badge> -->
 										</div>
@@ -55,7 +59,7 @@
 				</div>
 				<el-dialog :title="jobEditTitle" :visible.sync="jobEditVisible" 
 					:width="'65%'" :top="'4vh'" destroy-on-close :close-on-click-modal="false">
-					<job-edit ref="jobEdit" @handleClose="closeJob"></job-edit>
+					<job-edit ref="jobEdit" @handleClose="closeJobDialog"></job-edit>
 				</el-dialog>
 				<el-dialog :title="jobResumesTitle" :visible.sync="jobResumesVisible" 
 					:width="'90%'" :top="'4vh'" destroy-on-close :close-on-click-modal="false">
@@ -112,7 +116,7 @@
 			clearInterval(jobManagerInterval);
 		},
 		methods: {
-			...mapActions('job',['deletePosition','getHoursTip','getJobList','getJob','getStaffInfo']),
+			...mapActions('job',['closePositionApi','getHoursTip','getJobList','getJob','getStaffInfo']),
 			init:function(){
 				this.getHoursTip();
 				this.getStaffInfo();
@@ -122,21 +126,21 @@
 				this.jobEditTitle='创建职位';
 				this.jobEditVisible = true;
 			},
-			delJob: function(job){
-				this.$confirm('该职位下已投递'+this.waitSenderCount(job.senders)+'个简历,您要删除该职位', '提示', {
+			closeJob: function(job){
+				this.$confirm('该职位下已投递'+this.waitSenderCount(job.senders)+'个简历,您要停用该职位', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					this.deletePosition(job).then(()=>{
+					this.closePositionApi(job).then(()=>{
 						this.$message({
-							message: '删除成功',
+							message: '停用成功',
 							type: 'success'
 						});
 					}).catch(()=>{
-						this.$message.error("删除失败");
+						this.$message.error("停用失败");
 					});
-				}).catch(() => {
+				}).catch(()=>{
 					return false;
 				});
 			},
@@ -156,7 +160,7 @@
 				this.jobResumesTitle=item.position;
 				this.getJob(item);
 			},
-			closeJob:function(){
+			closeJobDialog:function(){
 				this.jobEditVisible = false;
 			},
 			waitSenderCount:function(senderList){
@@ -253,10 +257,13 @@
 								outline: none;
 								padding: 0vh 0.5vw 0vh 0vw;
 							}
-							.edit-room:after{
+							.edit-job:after{
 								content: '|';
 								color: #C8C6C4;
 								padding: 0vh 0vw 0vh 0.5vw;
+							}
+							.open-job{
+								color: transparent;
 							}
 						}
 						.job-info-wrap{

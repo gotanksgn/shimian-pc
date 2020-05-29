@@ -1,5 +1,14 @@
 const FileManagerPlugin = require('filemanager-webpack-plugin')
-const versionid = "v1.2.1.11"
+/**
+ * 生成应用版本号
+ */
+let getAppVersion= function(){
+	var date = new Date()
+	return "v"+(date.getFullYear())+(date.getMonth() + 1)+(date.getDate())
+		+(date.getHours() < 10 ? "0" + date.getHours() : date.getHours())
+		+(date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes())
+		+(date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds());
+}
 //vue配置信息
 module.exports={
 	//不生成.map文件
@@ -13,10 +22,10 @@ module.exports={
 					], */
 					mkdir:['./archive'],
 					archive: [
-						{source: './dist', destination: './archive/dist.'+versionid+'.zip'},
+						{source: './dist', destination: './archive/shimianpc.'+getAppVersion()+'.zip'},
 					]
 				}
 			})
 		]
 	}
-} 
+}

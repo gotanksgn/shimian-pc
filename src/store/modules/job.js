@@ -5,9 +5,7 @@ import {lstore} from '@/utils/store.js'
  */
 const state = {
 	hoursTip:'您好',
-	jobList:[
-		
-	],
+	jobList:[],
 	staff:{},
 	currentPosition: {},
 	currentJob:{}
@@ -53,7 +51,7 @@ const actions = {
 						});
 						waitResumeCount=waitResumeCount+waitResumeList.length;
 					}
-					console.log("item="+item.id+"，waitResumeCount="+waitResumeCount);
+					//console.log("item="+item.id+"，waitResumeCount="+waitResumeCount);
 					if(idx==res.data.length-1){
 						commit('login/setMenuCount',{id:1,count:waitResumeCount}, {root: true});
 					}

@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --copy",
-    "serve-https": "vue-cli-service serve --port=443 --https --copy",
-    "build": "vue-cli-service build",
+    "serve-dev": "vue-cli-service serve --copy",
+    "serve-dev-https": "vue-cli-service serve --port=443 --https --copy",
+	"serve-pro": "vue-cli-service serve --mode=production --copy",
+    "build-pro": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

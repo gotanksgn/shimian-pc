@@ -1,5 +1,5 @@
 <template>
-	<el-container class="login">	
+	<el-container class="login" :class="loginbgClass">	
 		<el-main class="login-wrap">
 			<el-row>
 				<el-col :span="8" :offset="14">
@@ -71,7 +71,8 @@
 					]
 				},
 				loginLoading:false,
-				loginCache:false
+				loginCache:false,
+				loginbgClass:process.env.NODE_ENV === 'development'?'loginbg-dev':'loginbg-pro'
 			}
 		},
 		computed:{
@@ -176,6 +177,17 @@
 					this.btntxt = "获取验证码";
 					this.disabled = false;
 				}
+			},
+			isChrome() {
+				return new Promise((resolve,reject)=>{
+					let USER_AGENT = navigator.userAgent.toLowerCase()
+					let isChrome = /.*(chrome)\/([\w.]+).*/
+					if(isChrome.test(USER_AGENT)){
+						resolve();
+					}else{
+						reject();
+					}
+				});
 			}
 		},
 		// 注册组件
@@ -184,25 +196,31 @@
 		},
 		// 创建完毕状态(里面是操作)
 		created() {
-			if(this.$util.common.getExplore()!='Chrome'){
+			this.isChrome().then(()=>{
+				this.tokenLogin();
+			}).catch(()=>{
 				this.$message({
 					message: '浏览器版本过低，页面可能无法正常显示或部分功能无法正常使用，请更换Chrome浏览器',
 					type: 'error',
 					duration:0
 				});
-			}
-			this.tokenLogin();
+			});
 		}
 	}
 
 </script>
 
 <style lang="less">
-	.login{
-		height: 120vh;
+	.loginbg-dev{
+		background-color: black !important;
+		background: url(~@/assets/img/login/login_bg2.png) #333 no-repeat top center / 90vw auto;
+	}
+	.loginbg-pro{
 		background-color: black !important;
 		background: url(~@/assets/img/login/login_bg1.png) #333 no-repeat top center / 90vw auto;
-		//background: url(~@/assets/img/login/login_bg2.png) #333 no-repeat top center / 90vw auto;
+	}
+	.login{
+		height: 120vh;
 		.login-wrap {
 			box-sizing: border-box;
 			.login-container {
