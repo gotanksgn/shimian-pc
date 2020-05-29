@@ -38,7 +38,7 @@ const actions = {
 		});
 	},
 	getJobList({commit}){
-		enterprisePositionsApi(true,true).then(res=>{
+		enterprisePositionsApi().then(res=>{
 			if(res.code==0){
 				let waitResumeCount = 0;
 				let waitResumeList;
@@ -108,7 +108,7 @@ const mutations = {
 	},
 	pushPositionList(state,data){
 		let curObj = state.jobList.filter(e=>e.id===data.id)[0];
-		console.log("curObj="+JSON.stringify(data));
+		// console.log("curObj="+JSON.stringify(data));
 		if(curObj){
 			Object.assign(curObj, data);
 		}else{

@@ -12,32 +12,32 @@
 				</el-form>	
 				<el-divider></el-divider>
 				<el-row class="resume-row">
-					<el-col :span="5" v-for="(resume, index) in resumesTable" :key="resume.id" :offset="index%4 > 0 ? 1 : 0">
+					<el-col :span="5" v-for="(student, index) in studentTable" :key="student.id" :offset="index%4 > 0 ? 1 : 0">
 						<el-card class="resume-item" shadow="always">
 							<div slot="header" class="resume-item-header">
-								{{encryptedName(resume.info.fullname)}}<el-link class="resume-item-header-info" :underline="false" @click="viewResumeInfo(resume)"><i class="el-icon-tickets el-icon--right"></i></el-link>
+								{{encryptedName(student.info.fullname)}}<el-link class="resume-item-header-info" :underline="false" @click="viewStudentInfo(student)"><i class="el-icon-tickets el-icon--right"></i></el-link>
 							</div>
-							<el-avatar :size="60" :src="resume.info.profilePicture" @error="true">
+							<el-avatar :size="60" :src="student.info.profilePicture" @error="true">
 								<img src="@/assets/img/job/headimg/head_999.png"/>
 							</el-avatar>
 							<div class="resume-item-info">
 								<el-row>
 									<el-col :span="24" class="resume-item-info-tag">
-										<el-tag type="primary" v-if="resume.info.age" size="mini">{{resume.info.age}}岁</el-tag>
-										<el-tag type="danger" v-if="resume.info.workStatus" size="mini">{{resume.info.workStatus}}</el-tag>
-										<el-tag type="success" v-if="resume.info.city" size="mini">当前在{{resume.info.city}}</el-tag>
-										<el-tag type="primary" v-if="resume.info.workLength" size="mini">{{resume.info.workLength}}年经验</el-tag>
-										<el-tag type="warning" v-if="resume.target && resume.target.positionType" size="mini">{{resume.target.positionType}}</el-tag>
-										<el-tag type="danger" v-if="resume.target && resume.target.salary" size="mini">{{resume.target.salary}}</el-tag>
-										<el-tag type="success" v-if="resume.edus && resume.edus.length>0 && resume.edus[0].college" size="mini">{{resume.edus[0].college}}</el-tag>
-										<el-tag type="warning" v-if="resume.edus && resume.edus.length>0 && resume.edus[0].degree" size="mini">{{resume.edus[0].degree}}</el-tag>
+										<el-tag type="primary" v-if="student.info.age" size="mini">{{student.info.age}}岁</el-tag>
+										<el-tag type="danger" v-if="student.info.workStatus" size="mini">{{student.info.workStatus}}</el-tag>
+										<el-tag type="success" v-if="student.info.city" size="mini">当前在{{student.info.city}}</el-tag>
+										<el-tag type="primary" v-if="student.info.workLength" size="mini">{{student.info.workLength}}年经验</el-tag>
+										<el-tag type="warning" v-if="student.target && student.target.positionType" size="mini">{{student.target.positionType}}</el-tag>
+										<el-tag type="danger" v-if="student.target && student.target.salary" size="mini">{{student.target.salary}}</el-tag>
+										<el-tag type="success" v-if="student.resume && student.resume.edus && student.resume.edus.length>0 && student.resume.edus[0].college" size="mini">{{student.resume.edus[0].college}}</el-tag>
+										<el-tag type="warning" v-if="student.resume && student.resume.edus && student.resume.edus.length>0 && student.resume.edus[0].degree" size="mini">{{student.resume.edus[0].degree}}</el-tag>
 									</el-col>
 								</el-row>	
 							</div>
 						</el-card>
 					</el-col>
 				</el-row>
-				<el-dialog :title="resumeInfoTitle" :visible.sync="resumeInfoVisible" width="50%" append-to-body :top="'2vh'" destroy-on-close>
+				<el-dialog :title="studentInfoTitle" :visible.sync="studentInfoVisible" width="50%" append-to-body :top="'2vh'" destroy-on-close>
 					<resume-info ref="resumeInfo" encrypted></resume-info>
 				</el-dialog>
 			</div>			
@@ -60,9 +60,9 @@
 				searchForm:{
 					posintionType:'Java'
 				},
-				resumeInfoTitle:'个人简历',
-				resumeInfoVisible:false,
-				resumesTable:[]
+				studentInfoTitle:'个人简历',
+				studentInfoVisible:false,
+				studentTable:[]
 			}
 		},
 		created(){
@@ -72,17 +72,17 @@
 			searchResumes(searchKeyArgs){
 				let searchKey= searchKeyArgs && searchKeyArgs.length>0?searchKeyArgs[searchKeyArgs.length-1]:"@";
 				getResumesBySearchKeyApi({"searchKey":searchKey}).then(res=>{
-					this.resumesTable=res.data
+					this.studentTable=res.data
 				});
 			},
 			positionSearch(node,keyword){
 				return node.value.toLowerCase().indexOf(keyword.toLowerCase()) === 0;
 			},
-			viewResumeInfo(item){
-				this.resumeInfoTitle="个人简历-"+this.$util.encrypted.encryptedUserName(item.info.fullname);
-				this.resumeInfoVisible=true;
+			viewStudentInfo(student){
+				this.studentInfoTitle="个人简历-"+this.$util.encrypted.encryptedUserName(student.info.fullname);
+				this.studentInfoVisible=true;
 				this.$nextTick(function(){
-					this.$refs.resumeInfo.view(item);
+					this.$refs.resumeInfo.view(student.info);
 				});
 			},
 			encryptedName(fullname){

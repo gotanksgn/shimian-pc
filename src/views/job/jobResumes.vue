@@ -42,7 +42,7 @@
 						<template slot-scope="scope">
 							<el-button size="mini" @click="playVideo(scope.row,'视频简历')" type="primary" round>简历<i class="el-icon-video-camera-solid el-icon--right"></i></el-button>
 							<el-button size="mini" @click="playVideo(scope.row,'视频问答')" type="primary" round>问答<i class="el-icon-video-camera el-icon--right"></i></el-button>
-							<el-button size="mini" @click="viewResumeInfo(scope.row)" type="warning" round>查看简历</el-button>
+							<el-button size="mini" @click="viewStudentInfo(scope.row)" type="warning" round>查看简历</el-button>
 							<el-button size="mini" @click="appointJob(scope.row)" type="danger" round>约一下</el-button>
 						</template>
 					</el-table-column>
@@ -89,7 +89,7 @@
 						<template slot-scope="scope">
 							<el-button size="mini" @click="playVideo(scope.row,'视频简历')" type="primary" round>简历<i class="el-icon-video-camera-solid el-icon--right"></i></el-button>
 							<el-button size="mini" @click="playVideo(scope.row,'视频问答')" type="primary" round>问答<i class="el-icon-video-camera el-icon--right"></i></el-button>
-							<el-button size="mini" @click="viewResumeInfo(scope.row)" type="warning" round>查看简历</el-button>
+							<el-button size="mini" @click="viewStudentInfo(scope.row)" type="warning" round>查看简历</el-button>
 							<el-button size="mini" @click="goVideoRoom(scope.row)" type="success" round>转面试间</el-button>
 						</template>
 					</el-table-column>
@@ -136,7 +136,7 @@
 						<template slot-scope="scope">
 							<el-button size="mini" @click="playVideo(scope.row,'视频简历')" type="primary" round>简历<i class="el-icon-video-camera-solid el-icon--right"></i></el-button>
 							<el-button size="mini" @click="playVideo(scope.row,'视频问答')" type="primary" round>问答<i class="el-icon-video-camera el-icon--right"></i></el-button>
-							<el-button size="mini" @click="viewResumeInfo(scope.row)" type="warning" round>查看简历</el-button>
+							<el-button size="mini" @click="viewStudentInfo(scope.row)" type="warning" round>查看简历</el-button>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -148,7 +148,7 @@
 		<el-dialog :title="jobAppointTitle" :visible.sync="jobAppointVisible" width="50%" append-to-body :top="'2vh'" destroy-on-close>
 			<job-appoint ref="jobAppoint" :close="closeAppointJobDialog"></job-appoint>
 		</el-dialog>
-		<el-dialog :title="resumeInfoTitle" :visible.sync="resumeInfoVisible" width="50%" append-to-body :top="'2vh'" destroy-on-close>
+		<el-dialog :title="studentInfoTitle" :visible.sync="studentInfoVisible" width="50%" append-to-body :top="'2vh'" destroy-on-close>
 			<resume-info ref="resumeInfo"></resume-info>
 		</el-dialog>
 	</div>
@@ -169,8 +169,8 @@
 				resumeVideoVisible:false,
 				jobAppointTitle:'面试预约',
 				jobAppointVisible:false,
-				resumeInfoTitle:'个人简历',
-				resumeInfoVisible:false,
+				studentInfoTitle:'个人简历',
+				studentInfoVisible:false,
 				currentData:{}
 			}
 		},
@@ -207,7 +207,7 @@
 					}
 					if(videoId!=undefined && videoId!=null && videoId!=''){
 						getVodPlayApi({"videoId":videoId}).then(res=>{
-							console.log(JSON.stringify(res));
+							// console.log(JSON.stringify(res));
 							res.data.playInfoList.forEach(playInfo=>{
 								sources.push({
 									type:"video/"+playInfo.format,
@@ -228,11 +228,11 @@
 					}
 				});
 			},
-			viewResumeInfo(item){
-				this.resumeInfoTitle="个人简历-"+item.name;
-				this.resumeInfoVisible=true;
+			viewStudentInfo(item){
+				this.studentInfoTitle="个人简历-"+item.name;
+				this.studentInfoVisible=true;
 				this.$nextTick(function(){
-					this.$refs.resumeInfo.view(item.sender.resume);
+					this.$refs.resumeInfo.view(item.sender.info);
 					this.currentData=item;
 				});
 			},
@@ -242,7 +242,7 @@
 				this.$nextTick(function(){
 					this.$refs.jobAppoint.edit(item);
 				});
-				console.log("waitTableData=>"+JSON.stringify(this.waitTableData));
+				// console.log("waitTableData=>"+JSON.stringify(this.waitTableData));
 			},
 			closeAppointJobDialog(){
 				this.jobAppointVisible=false;
@@ -274,21 +274,21 @@
 						data.age=sender.info.age;
 						data.headImg=sender.info.profilePicture;
 						data.city=sender.info.city;
+						if(sender.info.targets && sender.info.targets.length>0){
+							data.positionType=sender.info.targets[0].positionType;
+							data.trade=sender.info.targets[0].trade;
+							data.targetCity=sender.info.targets[0].city;
+							data.salary=sender.info.targets[0].salary;
+						}
+						if(sender.info.vcrs && sender.info.vcrs.length>0){
+							data.videoid=sender.info.vcrs[0].videoId;
+						}
 					}
 					if(sender.resume){
 						if(sender.resume.edus && sender.resume.edus.length>0){
 							data.spec=sender.resume.edus[0].major;
 							data.edu=sender.resume.edus[0].college;
 							data.degree=sender.resume.edus[0].degree;
-						}
-						if(sender.resume.target){
-							data.positionType=sender.resume.target.positionType;
-							data.trade=sender.resume.target.trade;
-							data.targetCity=sender.resume.target.city;
-							data.salary=sender.resume.target.salary;
-						}
-						if(sender.resume.vcrs && sender.resume.vcrs.length>0){
-							data.videoid=sender.resume.vcrs[0].videoId;
 						}
 					}
 					data.questionid=sender.answerVideoId;

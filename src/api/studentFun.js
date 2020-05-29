@@ -5,4 +5,4 @@
 import {req} from './axiosFun';
 
 //预约面试
-export const getResumesBySearchKeyApi=(data)=>{return req('get','/api/student/resumes/by-searchkey',data)};
+export const getResumesBySearchKeyApi=(data)=>{return req('get','/api/student/lists/by-searchkey',data)};

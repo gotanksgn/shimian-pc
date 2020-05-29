@@ -1,5 +1,5 @@
 import {lstore} from '@/utils/store.js'
-import {enterprisePositionsApi} from '@/api/jobFun.js'
+// import {enterprisePositionsApi} from '@/api/jobFun.js'
 /**
  * 系统登陆
  */
@@ -14,16 +14,16 @@ const getters = {
 
 const actions = {
 	getMenuList({ commit }) {
-		enterprisePositionsApi(false,false).then(
-			()=>{
+		// enterprisePositionsApi().then(
+		// 	()=>{
 				commit("setMenuList", [
 					{id:1,label:'职位管理',route:'/job-manager'},
 					{id:2,label:'面试间',route:'/video-manager'},
 					{id:3,label:'简历市场',route:'/resume-market'}
 					/**,{id:4,label:'帮助中心',route:'/help-manager'}**/
 					]);
-			}
-		);
+		// 	}
+		// );
 	},
 	saveLoginInfo({commit},user){
 		commit("login",user);
