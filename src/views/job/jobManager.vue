@@ -100,15 +100,13 @@
 		computed: {
 			...mapState('login', ['user']),
 			...mapState('job', ['jobList','hoursTip','jobDialog','staff']),
-			jobCount:function(){
+			jobCount(){
 				return this.jobList.length;
 			}
 		},
 		created(){
 			jobManagerInterval = setInterval(()=>{
-				if(window.localStorage.getItem('autoload_mode')!="false"){
-					setTimeout(()=>this.init(),500);
-				}
+				setTimeout(()=>this.init(),500);
 			},5000);
 			this.init();
 		},
@@ -118,6 +116,7 @@
 		methods: {
 			...mapActions('job',['closePositionApi','getHoursTip','getJobList','getJob','getStaffInfo']),
 			init:function(){
+				console.log("[拉取数据] 获取职位列表 "+new Date().getSeconds());
 				this.getHoursTip();
 				this.getStaffInfo();
 				this.getJobList();

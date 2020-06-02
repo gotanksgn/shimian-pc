@@ -11,33 +11,35 @@
 						<el-table :data="waitTableData" class="video-table-list" stripe height="60vh">
 							<el-table-column width="80" class="resume-table-headimg">
 								<template slot-scope="scope">
-									<el-avatar shape="square" :size="60" :src="scope.row.info.profilePicture" @error="errorHeadImgHandler">
+									<el-avatar shape="square" :size="60" :src="scope.row.info.profilePicture" @error="true">
 										<img src="@/assets/img/job/headimg/head_999.png"/>
 									</el-avatar>
 								</template>
 							</el-table-column>
-							<el-table-column width="200" label="面试人">
+							<el-table-column width="250" label="面试人">
 								<template slot-scope="scope">
 									<div class="resume-table-name">{{scope.row.info.fullname}}</div>
 									<div>
-										<el-tag type="danger" size="small">{{scope.row.info.age}}岁</el-tag>
-										<el-tag size="small">{{scope.row.info.city}}</el-tag>
-										<el-tag type="warning" size="small">{{scope.row.info.workLength}}年</el-tag>
+										<el-tag type="danger" size="mini">{{scope.row.info.age}}岁</el-tag>
+										<!-- <el-tag size="mini">{{scope.row.info.city}}</el-tag> -->
+										<!-- <el-tag type="warning" size="mini">{{scope.row.info.workLength}}年</el-tag> -->
+										<el-tag size="mini" v-if="scope.row.resume && scope.row.resume.edus[0]">{{scope.row.resume.edus[0].degree}}</el-tag>
+										<el-tag type="success" size="mini" v-if="scope.row.resume && scope.row.resume.edus[0]">{{scope.row.resume.edus[0].college}}</el-tag>
 									</div>
 								</template>
 							</el-table-column>	
-							<el-table-column width="300"  label="面试职位">
+							<el-table-column width="280"  label="面试职位">
 								<template slot-scope="scope">
 									<div class="resume-table-name">{{scope.row.position.position}}</div>
 									<div>
-										<el-tag type="danger" size="small">{{scope.row.position.salary}}</el-tag>
-										<el-tag size="small">{{scope.row.position.city}}</el-tag>
-										<el-tag type="warning" size="small">{{scope.row.position.degree}}</el-tag>
-										<el-tag type="success" size="small">{{scope.row.position.workExp}}</el-tag>
+										<el-tag type="danger" size="mini">{{scope.row.position.salary}}</el-tag>
+										<el-tag size="mini">{{scope.row.position.city}}</el-tag>
+										<el-tag type="warning" size="mini">{{scope.row.position.degree}}</el-tag>
+										<el-tag type="success" size="mini">{{scope.row.position.workExp}}</el-tag>
 									</div>
 								</template>
 							</el-table-column>
-							<el-table-column width="200"  label="预约面试时间">
+							<el-table-column width="180"  label="预约面试时间">
 								<template slot-scope="scope">
 									<div>
 										<li class="el-icon-time">&emsp;{{scope.row.appointmentTime}}</li>
@@ -55,7 +57,7 @@
 								<template slot-scope="scope">
 									<div>
 										<el-button v-if="scope.row.state=='已接受'"
-											@click="enterVideoRoom(scope.row)"  v-loading.fullscreen.lock="fullscreenLoading"  type="primary" size="small" round
+											@click="enterVideoRoom(scope.row)"  v-loading.fullscreen.lock="fullscreenLoading"  type="primary" size="mini" round
 											element-loading-background="rgba(0, 0, 0, 0.2)" element-loading-spinner="el-icon-loading" element-loading-text="正在进入面试间...">进入房间
 										</el-button>
 										&emsp;
@@ -68,7 +70,7 @@
 													{{scope.row.staff.fullname}}预约面试
 												</el-timeline-item>
 											</el-timeline>
-											<el-button size="small" round  slot="reference" type="warning">查看进度</el-button>
+											<el-button size="mini" round  slot="reference" type="warning">查看进度</el-button>
 										</el-popover>
 										<!-- {{scope.row.roomId}} -->
 									</div>
@@ -81,18 +83,20 @@
 						<el-table :data="unevaluatedTableData" class="video-table-list" stripe height="60vh">
 							<el-table-column width="80" class="resume-table-headimg">
 								<template slot-scope="scope">
-									<el-avatar shape="square" :size="60" :src="scope.row.info.profilePicture" @error="errorHeadImgHandler">
+									<el-avatar shape="square" :size="60" :src="scope.row.info.profilePicture" @error="true">
 										<img src="@/assets/img/job/headimg/head_999.png"/>
 									</el-avatar>
 								</template>
 							</el-table-column>
-							<el-table-column width="200" label="面试人">
+							<el-table-column width="250" label="面试人">
 								<template slot-scope="scope">
 									<div class="resume-table-name">{{scope.row.info.fullname}}</div>
 									<div>
-										<el-tag type="danger" size="small">{{scope.row.info.age}}岁</el-tag>
-										<el-tag size="small">{{scope.row.info.city}}</el-tag>
-										<el-tag type="warning" size="small">{{scope.row.info.workLength}}年</el-tag>
+										<el-tag type="danger" size="mini">{{scope.row.info.age}}岁</el-tag>
+										<el-tag size="mini" v-if="scope.row.resume && scope.row.resume.edus[0]">{{scope.row.resume.edus[0].degree}}</el-tag>
+										<el-tag type="success" size="mini" v-if="scope.row.resume && scope.row.resume.edus[0]">{{scope.row.resume.edus[0].college}}</el-tag>
+										<!-- <el-tag size="mini">{{scope.row.info.city}}</el-tag> -->
+										<!-- <el-tag type="warning" size="mini">{{scope.row.info.workLength}}年</el-tag> -->
 									</div>
 								</template>
 							</el-table-column>	
@@ -100,19 +104,19 @@
 								<template slot-scope="scope">
 									<div class="resume-table-name">{{scope.row.position.position}}</div>
 									<div>
-										<el-tag type="danger" size="small">{{scope.row.position.salary}}</el-tag>
-										<el-tag size="small">{{scope.row.position.city}}</el-tag>
-										<el-tag type="warning" size="small">{{scope.row.position.degree}}</el-tag>
-										<el-tag type="success" size="small">{{scope.row.position.workExp}}</el-tag>
+										<el-tag type="danger" size="mini">{{scope.row.position.salary}}</el-tag>
+										<el-tag size="mini">{{scope.row.position.city}}</el-tag>
+										<el-tag type="warning" size="mini">{{scope.row.position.degree}}</el-tag>
+										<el-tag type="success" size="mini">{{scope.row.position.workExp}}</el-tag>
 									</div>
 								</template>
 							</el-table-column>
-							<el-table-column width="200"  label="面试官">
+							<el-table-column width="150"  label="面试官">
 								<template slot-scope="scope">
 									<div class="resume-table-name">{{scope.row.staff.fullname}}</div>
 									<div>
-										<el-tag size="small">{{scope.row.staff.enterpriseName}}</el-tag>
-										<el-tag size="small" type="warning">{{scope.row.staff.positionType}}</el-tag>
+										<el-tag size="mini">{{scope.row.staff.enterpriseName}}</el-tag>
+										<el-tag size="mini" type="warning">{{scope.row.staff.positionType}}</el-tag>
 									</div>
 								</template>
 							</el-table-column>
@@ -128,7 +132,7 @@
 									<div>
 										<el-popover placement="top" :title="'面试评价'" width="200" trigger="click">
 											<el-rate show-text></el-rate>
-											<el-button size="small" round  slot="reference" type="primary">评价</el-button>
+											<el-button size="mini" round  slot="reference" type="primary">评价</el-button>
 										</el-popover>
 										&emsp;
 										<el-popover placement="top" :title="'当前进度:'+scope.row.state" width="200" trigger="click">
@@ -140,7 +144,7 @@
 													{{scope.row.staff.fullname}}预约面试
 												</el-timeline-item>
 											</el-timeline>
-											<el-button size="small" round  slot="reference" type="warning">查看进度</el-button>
+											<el-button size="mini" round  slot="reference" type="warning">查看进度</el-button>
 										</el-popover>
 										<!-- {{scope.row.roomId}} -->
 									</div>
@@ -153,18 +157,20 @@
 						<el-table :data="doneTableData" class="video-table-list" stripe height="60vh">
 							<el-table-column width="80" class="resume-table-headimg">
 								<template slot-scope="scope">
-									<el-avatar shape="square" :size="60" :src="scope.row.info.profilePicture" @error="errorHeadImgHandler">
+									<el-avatar shape="square" :size="60" :src="scope.row.info.profilePicture" @error="true">
 										<img src="@/assets/img/job/headimg/head_999.png"/>
 									</el-avatar>
 								</template>
 							</el-table-column>
-							<el-table-column width="200" label="面试人">
+							<el-table-column width="250" label="面试人">
 								<template slot-scope="scope">
 									<div class="resume-table-name">{{scope.row.info.fullname}}</div>
 									<div>
-										<el-tag type="danger" size="small">{{scope.row.info.age}}岁</el-tag>
-										<el-tag size="small">{{scope.row.info.city}}</el-tag>
-										<el-tag type="warning" size="small">{{scope.row.info.workLength}}年</el-tag>
+										<el-tag type="danger" size="mini">{{scope.row.info.age}}岁</el-tag>
+										<el-tag size="mini" v-if="scope.row.resume && scope.row.resume.edus[0]">{{scope.row.resume.edus[0].degree}}</el-tag>
+										<el-tag type="success" size="mini" v-if="scope.row.resume && scope.row.resume.edus[0]">{{scope.row.resume.edus[0].college}}</el-tag>
+										<!-- <el-tag size="mini">{{scope.row.info.city}}</el-tag>
+										<el-tag type="warning" size="mini">{{scope.row.info.workLength}}年</el-tag> -->
 									</div>
 								</template>
 							</el-table-column>	
@@ -172,10 +178,10 @@
 								<template slot-scope="scope">
 									<div class="resume-table-name">{{scope.row.position.position}}</div>
 									<div>
-										<el-tag type="danger" size="small">{{scope.row.position.salary}}</el-tag>
-										<el-tag size="small">{{scope.row.position.city}}</el-tag>
-										<el-tag type="warning" size="small">{{scope.row.position.degree}}</el-tag>
-										<el-tag type="success" size="small">{{scope.row.position.workExp}}</el-tag>
+										<el-tag type="danger" size="mini">{{scope.row.position.salary}}</el-tag>
+										<el-tag size="mini">{{scope.row.position.city}}</el-tag>
+										<el-tag type="warning" size="mini">{{scope.row.position.degree}}</el-tag>
+										<el-tag type="success" size="mini">{{scope.row.position.workExp}}</el-tag>
 									</div>
 								</template>
 							</el-table-column>
@@ -203,7 +209,7 @@
 							<span>{{videoRoomTitle}}</span>
 						</el-col>
 						<el-col :span="2" :offset="17">
-							<el-button type="danger" size="small" @click="exitRoom">退出面试间</el-button>
+							<el-button type="danger" size="mini" @click="exitRoom">退出面试间</el-button>
 						</el-col>	
 					</el-row>
 					<video-room ref="videoRoom"></video-room>
@@ -220,6 +226,7 @@
 	import pageHead from '@/components/pageHead.vue'
 	import pageFooter from '@/components/pageFooter.vue'
 	import videoRoom from '@/views/video/videoRoom.vue'
+	let videoManagerInterval;
 	export default {
 		name: 'videoManager',
 		data() {
@@ -273,7 +280,13 @@
 			/* ,playerVideo */
 		},
 		methods:{
-			enterVideoRoom(item){
+			init:function(){
+				console.log("[拉取数据] 获取面试列表 "+new Date().getSeconds());
+				this.$store.dispatch("video/getWaitList");
+				this.$store.dispatch("video/getUnevaluatedList");
+				this.$store.dispatch("video/getDoneList");
+			},
+			enterVideoRoom:function(item){
 				console.log(item);
 				this.fullscreenLoading = true;
 				this.$store.commit('video/setCurrentInvitation',item);
@@ -281,7 +294,7 @@
 				this.videoRoomVisible = true;
 				this.$nextTick(()=>this.$refs.videoRoom.init());
 			},
-			cancelInterview(item){
+			cancelInterview:function(item){
 				this.$confirm('您要取消该次面试', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -298,7 +311,7 @@
 					
 				});
 			},
-			getStateClass(state){
+			getStateClass:function(state){
 				if(state=='已超时'){
 					return "el-icon-warning color_firebrick";
 				}else if(state=='未接受'){
@@ -309,13 +322,10 @@
 					return "el-icon-star-on color_coral"
 				}
 			},
-			interviewResult(item){
+			interviewResult:function(item){
 				console.log(item);
 			},
-			errorHeadImgHandler(){
-				return true;
-			},
-			exitRoom(){
+			exitRoom:function(){
 				this.$confirm('您正在视频面试,退出面试间后将中断与面试人通信', '退出确认', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -326,9 +336,13 @@
 			}
 		},
 		created(){
-			this.$store.dispatch("video/getWaitList");
-			this.$store.dispatch("video/getUnevaluatedList");
-			this.$store.dispatch("video/getDoneList");
+			videoManagerInterval = setInterval(()=>{
+				setTimeout(()=>this.init(),500);
+			},5000);
+			this.init();
+		},
+		destroyed(){
+			clearInterval(videoManagerInterval);
 		}
 	}
 </script>

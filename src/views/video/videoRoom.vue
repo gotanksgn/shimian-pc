@@ -281,6 +281,8 @@
 											message: '面试人已接受面试邀请',
 											type:'success',
 										});
+										_this.videoStatus='connecting';
+										_this.callingFlag=false;
 									}else if(obj.action=='REFUSE'){
 										_this.$message({
 											message: '面试人拒绝了面试邀请',
@@ -464,6 +466,8 @@
 				return new Promise((resolve, reject)=> {
 					aliWebrtc.leaveChannel().then(()=>{
 						this.publishGoEasy('LEAVE').then(()=>{
+							clearInterval(loopSubScribeUserInterval);
+							clearTimeout(callingTimeout);
 							console.log("[RTC] 离开房间成功");
 							resolve();
 						});

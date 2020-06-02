@@ -38,7 +38,7 @@
 		data() {
 			return {
 				telphone:'电话：010-5352****',
-				company:'北京龙马中外企业家服务有限公司',
+				company:'北京驰诺佳科技有限公司',
 				icp:'京ICP备17053558号-2',
 				copyright:'Copyright ©2019-2022 jagt All Rights Reserved',
 				homelinks:[

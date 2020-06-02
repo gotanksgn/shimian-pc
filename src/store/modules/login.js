@@ -53,7 +53,7 @@ const mutations = {
 			}
 		}
 		state.menuList=Object.assign([],list);
-		console.log("state.menuList3="+state.menuList);
+		//console.log("state.menuList3="+state.menuList);
 	}
 }
 
